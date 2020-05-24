@@ -8,7 +8,7 @@
 </h1>
 
 
-As I see my professional growth and learning are not being captured dynamically as I need at one place. So this website is a place where I can build things and update content more dynamic.
+A personal website for my professional growth and learning to be captured at one place. This is being buildd with Gatsby, React frameworks.
 
 ## Thesis:
 
