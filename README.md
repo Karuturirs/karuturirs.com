@@ -17,4 +17,3 @@ As I see my professional growth and learning are not being captured dynamically 
 * Markdown files supported articles.
 
 
-
