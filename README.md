@@ -8,7 +8,7 @@
 </h1>
 
 
-A personal website for my professional growth and learning to be captured at one place. This is being buildd with Gatsby, React frameworks.
+My personal website for my professional growth and learning to be captured at one place. This is being build with Gatsby, React frameworks.
 
 ## Thesis:
 
