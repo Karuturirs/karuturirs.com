@@ -3,10 +3,10 @@ import config from "../../data/appConfig"
 
 export default function Header() {
     return (
-        <div class="header">
-            <a href="#default" class="logo">{`${config.siteTitle}`}</a>
-            <div class="header-right">
-                <a class="active" href="#home">Home</a>
+        <div style={{ margin: `3rem auto`, maxWidth: 650, padding: `0 1rem` }}>
+            <a href="#default" className="logo">{`${config.siteTitle}`}</a>
+            <div className="header-right">
+                <a className="active" href="#home">Home</a>
                 <a href="#contact">Contact</a>
                 <a href="#about">About</a>
             </div>

@@ -4,16 +4,25 @@
   </a>
 </p>
 <h1 align="center">
-  karuturirs.com
+  karuturirs.com (Under development)
 </h1>
 
 
 My personal website for my professional growth and learning to be captured at one place. This is being build with Gatsby, React frameworks.
 
-## Thesis:
+## Details:
 
 * Easy manageable a personal website.
 * Third party integartion.
 * Markdown files supported articles.
 
+
+## Inspiration:
+
+For every action there should be some inspiring event.
+
+* [Tania Rascia](https://github.com/taniarascia)
+* [Naval](https://nav.al)
+
+Thanks for your inspired articles and pod casts that made me learn React and build my own site.
 
