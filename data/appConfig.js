@@ -7,3 +7,6 @@ const config = {
     userTwitter: 'karuturirs',
     linkedInUrl: 'https://www.linkedin.com/in/ravisankarkaruturi/'
 }
+
+
+module.exports = config

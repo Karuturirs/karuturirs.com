@@ -24,5 +24,5 @@ For every action there should be some inspiring event.
 * [Tania Rascia](https://github.com/taniarascia)
 * [Naval](https://nav.al)
 
-Thanks for your inspired articles and pod casts that made me learn React and build my own site.
+Thanks for your inspired articles and pod casts that made me build my own website and learning UI.
 
