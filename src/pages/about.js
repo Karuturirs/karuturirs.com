@@ -7,12 +7,10 @@ export default function About() {
     <div >
       <Header></Header>
       <Layout>
-       <div style={{ margin: `3rem auto`, maxWidth: 800, padding: `0 1rem` }}>
-          <h1>About me</h1>
+          <h3>About me</h3>
           <p>
             I’m good enough, I’m smart enough, and gosh darn it, people like me!
           </p>
-        </div>
       </Layout>
     </div>
   )

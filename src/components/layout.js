@@ -1,10 +1,8 @@
 import React from "react"
-import { css } from "@emotion/core"
-import { rhythm } from "../utils/typography"
 
 export default function Layout({ children }) {
   return (
-    <div>
+    <div style={{ margin: `3rem auto`, maxWidth: 800, padding: `0 1rem` }}>
       {children}
     </div>
   )

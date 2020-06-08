@@ -6,12 +6,10 @@ export default function Contact() {
     <div >
       <Header></Header>
       <Layout>
-        <div style={{ margin: `3rem auto`, maxWidth: 800, padding: `0 1rem` }}>
-          <h1>I'd love to talk! Email me for a virtual coffee chat.</h1>
+          <h3>I'd love to talk! Email me for a virtual coffee chat.</h3>
           <p>
             <a href="mailto:hello@karuturirs.com">hello@karuturirs.com</a>
           </p>
-        </div>
       </Layout>
     </div>
   )
