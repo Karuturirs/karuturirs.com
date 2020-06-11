@@ -7,9 +7,10 @@ Hobbies are the important things that make you better. I know these days every o
 
 When we eat we only need to concentrate on eating, not by watching mobile or netfix and eat is said to be concentration. Doing so is always makes us not even really know how much we ate.
 
-Reading a book with out reacting to mobile notifications. can we really do that?
+There are many things that we do so day to day. 
 
-There will be many things that i go on list. The point here is, with the current fast growing technological world every one is lacking the capacity to concentrate on what they do.
+Reading a book or blog with out reacting to mobile notifications sounds. can we really do that?
+The point here is, with the current fast growing technological world every one is lacking the capacity to concentrate on what they do.
 
 Can we really do one thing at a given point of time. Doing so will help us to practice concentration.
 
