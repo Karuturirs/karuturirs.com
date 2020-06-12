@@ -4,7 +4,7 @@
   </a>
 </p>
 <h1 align="center">
-  karuturirs.com (Under development)
+  karuturirs.com
 </h1>
 
 
