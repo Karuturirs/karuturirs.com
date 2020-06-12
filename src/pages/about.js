@@ -7,7 +7,7 @@ import SEO from "../components/seo"
 export default function About() {
   return (
     <div >
-      <SEO title="About me | Ravi Sankar Karuturi" description="Software engineer looking for cool stuff to develop." /> 
+      <SEO title="About me" description="Software engineer looking for cool stuff to develop." /> 
       <Header></Header>
       <Layout>
           <h3>About me</h3>

@@ -9,7 +9,7 @@ import SEO from "../components/seo"
 export default function Home({ data }) {
   return (
     <div>
-      <SEO title="Karuturirs.com | Ravi Sankar Karuturi " description=" Articles | Tech discussions | Ideas and Innovation" />
+      <SEO title="Homepage Karuturirs.com" description=" Articles | Tech discussions | Ideas and Innovation" />
       <Header>
       </Header>
       <Layout>
