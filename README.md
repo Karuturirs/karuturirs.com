@@ -7,6 +7,7 @@
   karuturirs.com
 </h1>
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/62952849-ed6f-45d6-98a9-1ab7de06d242/deploy-status)](https://app.netlify.com/sites/youthful-ride-5d6fe5/deploys)
 
 My personal website for my professional growth and learning to be captured at one place. This is being build with Gatsby, React frameworks.
 
