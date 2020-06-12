@@ -4,43 +4,45 @@ import { css } from "@emotion/core"
 import { rhythm } from "../utils/typography"
 import Header from "../components/header"
 import Layout from "../components/layout"
+import SEO from "../components/seo"
 
 export default function Home({ data }) {
   return (
     <div>
-    <Header>
-    </Header>
-    <Layout>
-        <h3>Latest Works</h3>
-        <h4>{data.allMarkdownRemark.totalCount} Posts</h4>
-        {data.allMarkdownRemark.edges.map(({ node }) => (
-          <div key={node.id}>
-            <Link
-              to={node.fields.slug}
-              css={css`
-                text-decoration: none;
-                color: inherit;
-              `}
-            >
-              <h3
+      <SEO title="Karuturirs.com | Ravi Sankar Karuturi " description=" Articles | Tech discussions | Ideas and Innovation" />
+      <Header>
+      </Header>
+      <Layout>
+          <h3>Latest Works</h3>
+          <h4>{data.allMarkdownRemark.totalCount} Posts</h4>
+          {data.allMarkdownRemark.edges.map(({ node }) => (
+            <div key={node.id}>
+              <Link
+                to={node.fields.slug}
                 css={css`
-                  margin-bottom: ${rhythm(1 / 4)};
+                  text-decoration: none;
+                  color: inherit;
                 `}
               >
-                {node.frontmatter.title}{" "}
-                <span
+                <h3
                   css={css`
-                    color: #bbb;
+                    margin-bottom: ${rhythm(1 / 4)};
                   `}
                 >
-                  — {node.frontmatter.date}
-                </span>
-              </h3>
-              <p>{node.excerpt}</p>
-            </Link>
-          </div>
-        ))}
-    </Layout>
+                  {node.frontmatter.title}{" "}
+                  <span
+                    css={css`
+                      color: #bbb;
+                    `}
+                  >
+                    — {node.frontmatter.date}
+                  </span>
+                </h3>
+                <p>{node.excerpt}</p>
+              </Link>
+            </div>
+          ))}
+      </Layout>
     </div>
   )
 }

@@ -2,11 +2,13 @@ import React from "react"
 import { graphql } from "gatsby"
 import Layout from "../components/layout"
 import Header from "../components/header"
+import SEO from "../components/seo"
 
 export default function BlogPost({data}) {
   const post = data.markdownRemark
   return (
    <div>
+      <SEO title={post.frontmatter.title} description={post.excerpt} />
       <Header></Header>
       <Layout>
           <div>
@@ -25,6 +27,7 @@ export const query = graphql`
       frontmatter {
         title
       }
+      excerpt
     }
   }
 `
