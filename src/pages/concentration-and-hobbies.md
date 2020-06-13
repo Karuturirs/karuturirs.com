@@ -1,6 +1,8 @@
 ---
 title: "Concentration & Hobbies related?"
 date: "2020-06-09"
+readTime: "1 Min Read   "
+tags: "#General"
 ---
 
 Hobbies are important aspects that make us better. These days every one is so good at doing manythings at one go. Can we really concentrate on one thing at a time. I am sure not for a long time.

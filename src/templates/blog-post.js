@@ -3,6 +3,7 @@ import { graphql } from "gatsby"
 import Layout from "../components/layout"
 import Header from "../components/header"
 import SEO from "../components/seo"
+import style from "./blog-post.css"
 
 export default function BlogPost({data}) {
   const post = data.markdownRemark
@@ -13,6 +14,13 @@ export default function BlogPost({data}) {
       <Layout>
           <div>
             <h1>{post.frontmatter.title}</h1>
+            <div>
+                <p className={style.blogTag}>
+                    <span className="readtime">{post.frontmatter.readTime}</span>
+                    <span className="tags">{post.frontmatter.tags}</span>
+                </p>
+            </div>
+
             <div dangerouslySetInnerHTML={{ __html: post.html }} />
           </div>
       </Layout>
@@ -25,7 +33,10 @@ export const query = graphql`
     markdownRemark(fields: { slug: { eq: $slug } }) {
       html
       frontmatter {
+        date
         title
+        tags
+        readTime
       }
       excerpt
     }

@@ -1,6 +1,8 @@
 ---
 title: "Like to talk on anything..!"
 date: "2020-06-08"
+readTime: "1 Min Read  "
+tags: "Personal Development #Concentartion #Hobbies"
 ---
 
 Have you ever thought, "I have some thing to share and discuss". It could be Tech, about a book, idea, my dog.. etc. Great things are always so small stuff and powerful. Never over look at it.
