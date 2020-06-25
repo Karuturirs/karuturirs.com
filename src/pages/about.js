@@ -10,7 +10,7 @@ export default function About() {
       <SEO title="About me" description="Software engineer looking for cool stuff to develop." /> 
       <Header></Header>
       <Layout>
-          <h3>About me</h3>
+          <h3>Articles</h3>
           <p>
             I’m good enough, I’m smart enough, and gosh darn it, people like me!
           </p>
