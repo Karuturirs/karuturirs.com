@@ -17,8 +17,8 @@ export default function Header() {
                 <h3 style={{ display: `inline` }}>{config.siteTitle}</h3>
             </Link>
             <ul style={{ listStyle: `none`, float: `right`}}>
-                <ListLink to="/about/">About</ListLink>
-                <ListLink to="/contact/">Contact</ListLink>
+                <ListLink to="/articles/">Articles</ListLink>
+                <ListLink to="/about/">About Me</ListLink>
             </ul>
           </header>
         </div>
