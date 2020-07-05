@@ -4,15 +4,15 @@ import Header from "../components/header"
 import { graphql } from "gatsby"
 import SEO from "../components/seo"
 
-export default function About() {
+export default function ContactMe() {
   return (
     <div >
-      <SEO title="About me" description="Software engineer looking for cool stuff to develop." /> 
+      <SEO title="Contact me" description="Software engineer looking for cool stuff to develop." /> 
       <Header></Header>
       <Layout>
-          <h3>About me</h3>
+          <h3>Contact me</h3>
           <p>
-            A developer, who loves developing new stuff and make things easy and some time complex.
+            I love developing new stuff and make things easy and some time complex.
             I am so passionate in design and implementation of new products. Having around 10years of experience 
             in Backend development, Bigdata, Security, Content Management. 
           </p>

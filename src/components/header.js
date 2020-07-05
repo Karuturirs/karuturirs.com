@@ -11,14 +11,14 @@ const ListLink = props => (
 
 export default function Header() {
     return (
-        <div style={{ margin: `3rem auto`, maxWidth: 800, padding: `0 1rem` }}>
+        <div style={{ margin: `3rem auto`, maxWidth: 900, padding: `0 1rem` }}>
           <header style={{ marginBottom: `1.5rem`}}>
             <Link to="/" style={{ textShadow: `none`, backgroundImage: `none` }}>
-                <h3 style={{ display: `inline` }}>{config.siteTitle}</h3>
+                <h3 style={{ display: `inline` }}><span role="img" aria-label='logo'>👨‍💻</span>{config.siteTitle}</h3>
             </Link>
             <ul style={{ listStyle: `none`, float: `right`}}>
                 <ListLink to="/articles/">Articles</ListLink>
-                <ListLink to="/about/">About Me</ListLink>
+                <ListLink to="/contactme/">Contact Me</ListLink>
             </ul>
           </header>
         </div>

@@ -5,6 +5,7 @@ import { rhythm } from "../utils/typography"
 import Header from "../components/header"
 import Layout from "../components/layout"
 import SEO from "../components/seo"
+import Achivements from "../components/achievements"
 
 export default function Home({ data }) {
   return (
@@ -12,8 +13,9 @@ export default function Home({ data }) {
       <SEO title="Homepage Karuturirs.com" description=" Articles | Tech discussions | Ideas and Innovation" />
       <Header>
       </Header>
+      <Achivements/>
       <Layout>
-          <h3>Latest Works</h3>
+          <h3> <span role="img" aria-label='achivements'>📝</span> Latest Works</h3>
           <h4>{data.allMarkdownRemark.totalCount} Posts</h4>
           {data.allMarkdownRemark.edges.map(({ node }) => (
             <div key={node.id}>
