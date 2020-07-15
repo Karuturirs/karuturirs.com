@@ -9,12 +9,12 @@ export default function Achievements() {
         <Layout>
             <h3><span role="img" aria-label='achivements'>🏆</span> Achievements</h3>
             { config.achievements.map(achievement =>(
-               <div className={styles.achievement} key={achievement.id}>
+               <div className="achievement" key={achievement.id}>
                    <p>
-
-                   <b>{achievement.title}</b><br/>
-                   {achievement.subTitle}<br/>
-                   {achievement.more}</p>
+                        <b>{achievement.title}</b><br/>
+                        {achievement.subTitle}<br/>
+                        {achievement.more}
+                   </p>
                </div>
                 ))
             }

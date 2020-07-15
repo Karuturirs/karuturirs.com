@@ -6,6 +6,7 @@ import Header from "../components/header"
 import Layout from "../components/layout"
 import SEO from "../components/seo"
 import Achivements from "../components/achievements"
+import Projects from "../components/projects"
 
 export default function Home({ data }) {
   return (
@@ -14,11 +15,12 @@ export default function Home({ data }) {
       <Header>
       </Header>
       <Achivements/>
+      <Projects/>
       <Layout>
           <h3> <span role="img" aria-label='achivements'>📝</span> Latest Works</h3>
           <h4>{data.allMarkdownRemark.totalCount} Posts</h4>
           {data.allMarkdownRemark.edges.map(({ node }) => (
-            <div key={node.id}>
+            <div key={node.id}  className="mouse" style={{padding: `10px`}}>
               <Link
                 to={node.fields.slug}
                 css={css`
