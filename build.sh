@@ -23,9 +23,4 @@ else
   fi
 fi
 
-# Ensure favicon and assets exist in public
-if [ -f "static/favicon.ico" ] && [ ! -f "public/favicon.ico" ]; then
-  cp static/favicon.ico public/favicon.ico
-fi
-
 echo "Build finished successfully. Publishing directory: public/"
