@@ -228,6 +228,11 @@ pub fn render_kids_home(
     <p>Techniques taught step-by-step inside the games:</p>
     <div class="tricks">
       <div class="trick">
+        <h3>🔟 Ten-Frames &amp; Place Value</h3>
+        <p>Don't count 20+ things one by one! Group them into full tens and add the loose ones.</p>
+        <div class="ex">2 boxes of 10 + 4 singles &rarr; 20 + 4 = 24 🍎</div>
+      </div>
+      <div class="trick">
         <h3>🔟 Make a Ten</h3>
         <p>When adding numbers like 8 + 5, borrow 2 from the 5 to turn 8 into a friendly 10!</p>
         <div class="ex">8 + 5 &rarr; (8 + 2) + 3 = 10 + 3 = 13</div>
@@ -248,7 +253,7 @@ pub fn render_kids_home(
         <div class="ex">4 &times; 5 &rarr; 5, 10, 15, 20 (4 jumps of 5) = 20</div>
       </div>
       <div class="trick">
-        <h3>🔊 Sound It Out</h3>
+        <h3>🔊 Sound It Out (Phonics)</h3>
         <p>Stretch words out slowly to hear the beginning sound, middle vowel, and ending sound.</p>
         <div class="ex">F - R - O - G &rarr; FROG 🐸</div>
       </div>
@@ -256,6 +261,16 @@ pub fn render_kids_home(
         <h3>👂 Rhyme Clue</h3>
         <p>Rhyming words have the exact same sound at the end, even if they look slightly different!</p>
         <div class="ex">CAT &amp; HAT &middot; MOON &amp; SPOON 🌙</div>
+      </div>
+      <div class="trick">
+        <h3>🦁 Sound Association</h3>
+        <p>Animals and objects make distinctive sounds. Listen to the vowels and syllables!</p>
+        <div class="ex">"Moo" &rarr; Cow 🐮 &middot; "Quack" &rarr; Duck 🦆</div>
+      </div>
+      <div class="trick">
+        <h3>🔍 Real-World Size Comparison</h3>
+        <p>Think about how big things are in nature before tapping your answer!</p>
+        <div class="ex">Elephant 🐘 &gt; Mouse 🐭 &middot; Whale 🐋 &gt; Goldfish 🐟</div>
       </div>
     </div>
   </section>

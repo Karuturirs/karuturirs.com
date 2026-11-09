@@ -598,14 +598,14 @@ button{font-family:inherit;cursor:pointer}
 .hero-cta{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
 .btn{border:none;border-radius:18px;padding:15px 24px;font-weight:900;font-size:1.06rem;color:#fff;box-shadow:0 5px 0 rgba(0,0,0,.18);transition:transform .12s, box-shadow .12s}
 .btn:active{transform:translateY(4px);box-shadow:0 1px 0 rgba(0,0,0,.18)}
-.btn-coral{background:var(--coral)} .btn-teal{background:var(--teal)} .btn-sun{background:var(--sun);color:#4A2F00} .btn-sky{background:var(--sky)} .btn-ghost{background:var(--card);color:var(--ink);border:2px solid var(--line);box-shadow:0 4px 0 rgba(30,42,58,.10)}
+.btn-coral{background:var(--coral);color:#fff} .btn-teal{background:var(--teal);color:#fff} .btn-sun{background:var(--sun);color:#4A2F00} .btn-sky{background:var(--sky);color:#fff} .btn-grape{background:var(--grape);color:#fff} .btn-leaf{background:var(--leaf);color:#fff} .btn-berry{background:var(--berry);color:#fff} .btn-ghost{background:var(--card);color:var(--ink);border:2px solid var(--line);box-shadow:0 4px 0 rgba(30,42,58,.10)}
 .sound-toggle{font-size:.95rem;padding:11px 16px}
 
 /* LEVEL PICKER */
 .level-box{background:var(--card);border:2px solid var(--line);border-radius:22px;padding:16px 18px;box-shadow:var(--shadow);margin:18px 0 6px}
 .level-box h2{margin:0 0 4px;font-size:1.25rem}
 .level-box p{margin:0 0 12px;color:var(--muted);font-weight:700;font-size:.96rem}
-.levels{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.levels{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
 .level-btn{border:3px solid var(--line);background:var(--soft);color:var(--ink);border-radius:16px;padding:12px 10px;text-align:left}
 .level-btn strong{display:block;font-family:"Fredoka";font-size:1.05rem}
 .level-btn span{font-size:.86rem;color:var(--muted);font-weight:800}
@@ -688,6 +688,10 @@ footer{margin-top:22px;text-align:center;color:var(--muted);font-weight:800;font
 .play-card{background:var(--card);border:2px solid var(--line);border-radius:26px;box-shadow:var(--shadow);padding:26px 22px 24px;text-align:center}
 .visual{font-size:2.6rem;line-height:1.35;letter-spacing:.15em;min-height:54px;word-break:break-word}
 .visual.small{font-size:1.7rem;letter-spacing:.06em}
+.ten-frames{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;align-items:center;margin:8px 0}
+.ten-frame{display:inline-flex;flex-direction:column;gap:4px;background:var(--soft);border:2px solid var(--line);border-radius:14px;padding:6px 10px;box-shadow:0 3px 0 rgba(30,42,58,.08)}
+.ten-row{display:flex;gap:6px;justify-content:center;font-size:1.9rem;letter-spacing:.02em;line-height:1.2}
+.ten-tag{font-size:.78rem;font-weight:900;color:var(--teal-d);text-transform:uppercase;letter-spacing:.05em;margin-top:2px}
 .qprompt{font-family:"Fredoka";font-size:clamp(1.7rem,5.5vw,2.6rem);margin:8px 0 6px;line-height:1.15}
 .qsub{color:var(--muted);font-weight:800;margin:0 0 18px}
 .listen{margin-bottom:16px}
@@ -724,7 +728,7 @@ footer{margin-top:22px;text-align:center;color:var(--muted);font-weight:800;font
 .confetti{position:fixed;top:-14px;width:12px;height:16px;z-index:60;pointer-events:none;border-radius:3px;animation:fall linear forwards}
 @keyframes fall{to{transform:translateY(105vh) rotate(720deg);opacity:.9}}
 @media (prefers-reduced-motion: reduce){ .confetti{animation:none;display:none} *{scroll-behavior:auto} }
-@media (max-width:860px){ .hero{grid-template-columns:1fr} .grid{grid-template-columns:1fr 1fr} .hero-img{max-width:520px} }
+@media (max-width:860px){ .hero{grid-template-columns:1fr} .grid{grid-template-columns:1fr 1fr} .hero-img{max-width:520px} .levels{grid-template-columns:repeat(2,1fr)} }
 @media (max-width:560px){ .grid{grid-template-columns:1fr} .levels{grid-template-columns:1fr} .choices{grid-template-columns:1fr 1fr} .adventure{flex-direction:column;align-items:flex-start} .blank{width:44px;height:50px} .tile{width:50px;height:50px} }
 
 /* Kids Nav Bar for karuturirs.com integration */

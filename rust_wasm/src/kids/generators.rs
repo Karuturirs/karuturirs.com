@@ -190,7 +190,7 @@ fn tech_mul(t: i32, f: i32) -> Technique {
     }
 }
 
-// 1. Counting Fun
+// 1. Counting Fun (Organized in clear groups of 10s and 5s — Ten-Frames)
 pub fn gen_counting(diff: Difficulty, boost: u32) -> Question {
     let emoji = *pick(&["🍎", "⭐", "🦋", "🎈", "🍓", "🐥", "🚗", "🌸"]);
     let cap = match diff {
@@ -207,44 +207,121 @@ pub fn gen_counting(diff: Difficulty, boost: u32) -> Question {
         rnd(4, cap)
     };
 
-    let mut visual = String::new();
-    for _ in 0..n {
-        visual.push_str(emoji);
-        visual.push(' ');
-    }
+    // Build visual structured into groups of 10s with 5-and-5 rows for intuitive subitizing
+    let full_tens = n / 10;
+    let remainder = n % 10;
 
-    let mut groups = Vec::new();
-    let mut rem = n;
-    while rem > 0 {
-        let g = min(5, rem);
-        groups.push(g.to_string());
-        rem -= g;
-    }
-
-    let group_str = if groups.len() > 1 {
-        format!("{} — add the groups together.", groups.join(" + "))
+    let visual = if n <= 5 {
+        // Simple inline layout for very small numbers
+        let mut vis = String::new();
+        for _ in 0..n {
+            vis.push_str(emoji);
+            vis.push(' ');
+        }
+        vis
     } else {
-        groups.join(" + ")
+        // Grouped ten-frames
+        let mut html = String::from(r#"<div class="ten-frames">"#);
+
+        for t in 0..full_tens {
+            html.push_str(&format!(
+                r#"<div class="ten-frame">
+  <div class="ten-row">{row1}</div>
+  <div class="ten-row">{row2}</div>
+  <span class="ten-tag">Group of 10 (#{num})</span>
+</div>"#,
+                row1 = emoji.repeat(5),
+                row2 = emoji.repeat(5),
+                num = t + 1
+            ));
+        }
+
+        if remainder > 0 {
+            let rem_row1 = min(5, remainder);
+            let rem_row2 = remainder.saturating_sub(5);
+            let row2_html = if rem_row2 > 0 {
+                format!(r#"<div class="ten-row">{}</div>"#, emoji.repeat(rem_row2 as usize))
+            } else {
+                String::new()
+            };
+
+            html.push_str(&format!(
+                r#"<div class="ten-frame">
+  <div class="ten-row">{row1}</div>
+  {row2}
+  <span class="ten-tag">+{remainder} more</span>
+</div>"#,
+                row1 = emoji.repeat(rem_row1 as usize),
+                row2 = row2_html,
+                remainder = remainder
+            ));
+        }
+
+        html.push_str("</div>");
+        html
+    };
+
+    let (tech_title, steps_list, worked_str) = if full_tens > 0 {
+        let mut steps = vec![
+            format!("Notice the boxes: each full box holds a neat group of 10 {}.", emoji),
+            format!("Count the groups of 10 first: {} group{} of 10 = {}.",
+                full_tens,
+                if full_tens > 1 { "s" } else { "" },
+                full_tens * 10
+            ),
+        ];
+        if remainder > 0 {
+            steps.push(format!("Then add the remaining {remainder} singles: {} + {remainder} = {n}.", full_tens * 10));
+        } else {
+            steps.push(format!("No extra ones left over, so the total is {n}!"));
+        }
+        steps.push(format!("Place value trick: {full_tens} ten{} and {remainder} one{} = {n}.",
+            if full_tens > 1 { "s" } else { "" },
+            if remainder == 1 { "" } else { "s" }
+        ));
+
+        (
+            "🔟 Count in Tens & Ones".to_string(),
+            steps,
+            if remainder > 0 {
+                format!("{} tens + {} ones = {}", full_tens, remainder, n)
+            } else {
+                format!("{} tens = {}", full_tens, n)
+            }
+        )
+    } else {
+        (
+            "👆 Touch & Count in 5s".to_string(),
+            vec![
+                "Touch (or point at) each item as you count.".to_string(),
+                if n > 5 {
+                    format!("First row has 5 items. Count on from 5: 5 + {} = {}.", n - 5, n)
+                } else {
+                    format!("Count them one by one up to {n}.").to_string()
+                },
+                format!("There are {n} altogether!"),
+            ],
+            format!("Answer = {n}")
+        )
     };
 
     Question {
         visual,
-        visual_small: n > 12,
+        visual_small: false,
         prompt: "How many can you count?".to_string(),
-        sub: "Tap the number that matches.".to_string(),
+        sub: if full_tens > 0 {
+            format!("Count the groups of 10s and extra ones!")
+        } else {
+            "Tap the number that matches.".to_string()
+        },
         choices: num_choices(n, 4),
         answer: n.to_string(),
         reveal: None,
         speak: "How many can you count? Count carefully!".to_string(),
         technique: Some(Technique {
-            name: "👆 Touch & Count in 5s".to_string(),
-            steps: vec![
-                "Touch (or point at) each one as you count — never count the same one twice!".to_string(),
-                format!("Counting in groups of 5 helps: {group_str}"),
-                "The last number you say is how many there are.".to_string(),
-                format!("There are {n} altogether."),
-            ],
-            worked: format!("Answer = {n}"),
+            name: tech_title,
+            steps: steps_list,
+            worked: worked_str,
         }),
         is_spell: false,
         word: None,
