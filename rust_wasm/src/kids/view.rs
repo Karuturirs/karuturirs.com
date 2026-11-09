@@ -23,6 +23,7 @@ pub fn render_kids_home(
         PlayStyle::Streak => "Streak Challenge ❤️ (3 hearts, lose one for mistakes)",
     };
 
+    let mut prek_cards = String::new();
     let mut maths_cards = String::new();
     let mut english_cards = String::new();
 
@@ -37,7 +38,7 @@ pub fn render_kids_home(
 
         let q_label = if round_len == 0 {
             "Endless ♾️".to_string()
-        } else if g.subject == "english" {
+        } else if g.subject == "english" || g.id == "abcPhonics" {
             format!("{round_len} words")
         } else {
             format!("{round_len} questions")
@@ -63,7 +64,9 @@ pub fn render_kids_home(
             best_str = best_str
         );
 
-        if g.subject == "maths" {
+        if g.subject == "prek" {
+            prek_cards.push_str(&card_html);
+        } else if g.subject == "maths" {
             maths_cards.push_str(&card_html);
         } else {
             english_cards.push_str(&card_html);
@@ -98,21 +101,24 @@ pub fn render_kids_home(
         Fun, bite-sized learning games for little explorers! Practise numbers, counting, addition, times tables, spelling, phonics and rhymes — with step-by-step tricks that teach you <em>how</em> to think.
       </p>
       <div class="chips">
+        <span class="chip">🎨 Colors &amp; Shapes</span>
+        <span class="chip">🦁 Animal Sounds</span>
+        <span class="chip">🐘 Big &amp; Small</span>
         <span class="chip">🍎 Counting</span>
         <span class="chip">➕ Addition</span>
-        <span class="chip">➖ Take-Away</span>
-        <span class="chip">✖️ Tables</span>
-        <span class="chip">🔤 Spelling</span>
-        <span class="chip">🎵 Rhymes</span>
+        <span class="chip">🔤 ABC Phonics</span>
       </div>
       <div class="hero-cta-row">
         <button class="btn btn-coral" onclick="window.kidsStartGame('adventure')">
           🚀 Start The Big Adventure
         </button>
+        <button class="btn btn-sun" onclick="document.getElementById('prekSec').scrollIntoView({{behavior:'smooth'}})">
+          🎈 Pre-K Explorers
+        </button>
         <button class="btn btn-teal" onclick="document.getElementById('mathsSec').scrollIntoView({{behavior:'smooth'}})">
           📐 Maths Games
         </button>
-        <button class="btn btn-sun" onclick="document.getElementById('englishSec').scrollIntoView({{behavior:'smooth'}})">
+        <button class="btn btn-grape" onclick="document.getElementById('englishSec').scrollIntoView({{behavior:'smooth'}})">
           📚 English Games
         </button>
       </div>
@@ -131,6 +137,10 @@ pub fn render_kids_home(
     <h2>1. Pick your level 🎯</h2>
     <p>Questions adapt to you — little learners get smaller numbers and short words, super challengers get bigger ones.</p>
     <div class="levels">
+      <button class="level-btn {diff_prek}" onclick="window.kidsSetDiff('prek')">
+        <strong>🎈 Pre-K Explorers</strong>
+        <span>Ages 3–4 · Colors, shapes, animals &amp; ABCs</span>
+      </button>
       <button class="level-btn {diff_little}" onclick="window.kidsSetDiff('little')">
         <strong>🌱 Little Learners</strong>
         <span>Ages 4–5 · Numbers to 10 · 3-letter words</span>
@@ -177,6 +187,17 @@ pub fn render_kids_home(
     <button class="btn btn-adventure" onclick="window.kidsStartGame('adventure')">
       Play Adventure &rarr;
     </button>
+  </section>
+
+  <!-- PRE-K GAMES -->
+  <section id="prekSec">
+    <div class="sec-head">
+      <h2>🎈 Pre-K Early Explorers (Ages 3–4)</h2>
+      <span>Colors &middot; Shapes &middot; Animal Sounds &middot; Big vs Small &middot; ABC Phonics</span>
+    </div>
+    <div class="grid" id="prekGrid">
+      {prek_cards}
+    </div>
   </section>
 
   <!-- MATHS GAMES -->
@@ -264,6 +285,7 @@ pub fn render_kids_home(
         right = right,
         best_streak = best_streak,
         games_done = games_done,
+        diff_prek = if diff == Difficulty::PreK { "active" } else { "" },
         diff_little = if diff == Difficulty::Little { "active" } else { "" },
         diff_growing = if diff == Difficulty::Growing { "active" } else { "" },
         diff_super = if diff == Difficulty::Super { "active" } else { "" },
@@ -276,6 +298,7 @@ pub fn render_kids_home(
         style_streak = if style == PlayStyle::Streak { "active" } else { "" },
         mode_summary_len = mode_summary_len,
         mode_summary_style = mode_summary_style,
+        prek_cards = prek_cards,
         maths_cards = maths_cards,
         english_cards = english_cards
     )

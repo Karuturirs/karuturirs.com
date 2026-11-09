@@ -126,6 +126,7 @@ pub fn kids_start_game(game_id: &str) {
 
         let time_total = match state.style {
             PlayStyle::Clock => match state.diff {
+                Difficulty::PreK => 20,
                 Difficulty::Little => 18,
                 Difficulty::Growing => 15,
                 Difficulty::Super => 12,
@@ -323,6 +324,7 @@ pub fn kids_keep_going() {
 
         let time_total = match state.style {
             PlayStyle::Clock => match state.diff {
+                Difficulty::PreK => 20,
                 Difficulty::Little => 18,
                 Difficulty::Growing => 15,
                 Difficulty::Super => 12,

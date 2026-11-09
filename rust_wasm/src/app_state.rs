@@ -325,6 +325,7 @@ impl AppState {
 
             let tt = match style {
                 PlayStyle::Clock => match diff {
+                    Difficulty::PreK => 20,
                     Difficulty::Little => 18,
                     Difficulty::Growing => 15,
                     Difficulty::Super => 12,

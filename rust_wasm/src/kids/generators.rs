@@ -1,4 +1,6 @@
-use super::data::{RHYMES, STORIES, WORDS};
+use super::data::{
+    ABC_LIST, ANIMAL_SOUNDS, COLORS, COMPARISONS, RHYMES, SHAPES, STORIES, WORDS,
+};
 use super::models::{Difficulty, Question, Technique};
 use std::cmp::{max, min};
 use std::collections::HashSet;
@@ -192,11 +194,14 @@ fn tech_mul(t: i32, f: i32) -> Technique {
 pub fn gen_counting(diff: Difficulty, boost: u32) -> Question {
     let emoji = *pick(&["🍎", "⭐", "🦋", "🎈", "🍓", "🐥", "🚗", "🌸"]);
     let cap = match diff {
+        Difficulty::PreK => 5 + (boost as i32),
         Difficulty::Little => 10 + (boost as i32 * 2),
         Difficulty::Growing => 20 + (boost as i32 * 2),
         Difficulty::Super => 30 + (boost as i32 * 2),
     };
-    let n = if diff == Difficulty::Little {
+    let n = if diff == Difficulty::PreK {
+        rnd(1, cap)
+    } else if diff == Difficulty::Little {
         rnd(2, cap)
     } else {
         rnd(4, cap)
@@ -249,6 +254,7 @@ pub fn gen_counting(diff: Difficulty, boost: u32) -> Question {
 // 2. Addition Adventure
 pub fn gen_add(diff: Difficulty, boost: u32) -> Question {
     let max_val = match diff {
+        Difficulty::PreK => 5 + (boost as i32 * 2),
         Difficulty::Little => 10 + (boost as i32 * 4),
         Difficulty::Growing => 30 + (boost as i32 * 5),
         Difficulty::Super => 100 + (boost as i32 * 10),
@@ -319,6 +325,7 @@ pub fn gen_add(diff: Difficulty, boost: u32) -> Question {
 // 3. Take-Away Safari
 pub fn gen_subtract(diff: Difficulty, boost: u32) -> Question {
     let max_val = match diff {
+        Difficulty::PreK => 5 + (boost as i32 * 2),
         Difficulty::Little => 10 + (boost as i32 * 4),
         Difficulty::Growing => 30 + (boost as i32 * 5),
         Difficulty::Super => 100 + (boost as i32 * 10),
@@ -382,6 +389,7 @@ pub fn gen_subtract(diff: Difficulty, boost: u32) -> Question {
 // 4. Times Table Challenge
 pub fn gen_multiply(diff: Difficulty, boost: u32) -> Question {
     let (tables, max_factor) = match diff {
+        Difficulty::PreK => (vec![2], 3 + (boost as i32)),
         Difficulty::Little => (vec![2, 5, 10], 5 + (boost as i32)),
         Difficulty::Growing => (vec![2, 3, 4, 5, 10], 10 + (boost as i32)),
         Difficulty::Super => (vec![3, 4, 6, 7, 8, 9, 11, 12], 12),
@@ -425,7 +433,7 @@ pub fn gen_missing(diff: Difficulty, _boost: u32) -> Question {
     if mode == 1 {
         // Sequence pattern
         let step = match diff {
-            Difficulty::Little => *pick(&[1, 2]),
+            Difficulty::PreK | Difficulty::Little => *pick(&[1, 2]),
             Difficulty::Growing => *pick(&[1, 2, 5, 10]),
             Difficulty::Super => *pick(&[2, 3, 5, 10]),
         };
@@ -465,11 +473,13 @@ pub fn gen_missing(diff: Difficulty, _boost: u32) -> Question {
     } else if mode == 2 {
         // a + ? = total
         let a = match diff {
+            Difficulty::PreK => rnd(1, 4),
             Difficulty::Little => rnd(1, 7),
             Difficulty::Growing => rnd(3, 15),
             Difficulty::Super => rnd(10, 45),
         };
         let ans = match diff {
+            Difficulty::PreK => rnd(1, 3),
             Difficulty::Little => rnd(1, 5),
             Difficulty::Growing => rnd(2, 12),
             Difficulty::Super => rnd(5, 30),
@@ -500,11 +510,13 @@ pub fn gen_missing(diff: Difficulty, _boost: u32) -> Question {
     } else {
         // ? - ans = left
         let left = match diff {
+            Difficulty::PreK => rnd(1, 4),
             Difficulty::Little => rnd(2, 6),
             Difficulty::Growing => rnd(4, 15),
             Difficulty::Super => rnd(10, 40),
         };
         let ans = match diff {
+            Difficulty::PreK => rnd(1, 3),
             Difficulty::Little => rnd(1, 4),
             Difficulty::Growing => rnd(2, 10),
             Difficulty::Super => rnd(5, 25),
@@ -538,7 +550,7 @@ pub fn gen_missing(diff: Difficulty, _boost: u32) -> Question {
 // 6. Spell It!
 pub fn gen_spell(diff: Difficulty, _boost: u32) -> Question {
     let max_len = match diff {
-        Difficulty::Little => 3,
+        Difficulty::PreK | Difficulty::Little => 3,
         Difficulty::Growing => 5,
         Difficulty::Super => 7,
     };
@@ -574,7 +586,7 @@ pub fn gen_spell(diff: Difficulty, _boost: u32) -> Question {
 // 7. Missing Letter
 pub fn gen_missing_letter(diff: Difficulty, _boost: u32) -> Question {
     let max_len = match diff {
-        Difficulty::Little => 3,
+        Difficulty::PreK | Difficulty::Little => 3,
         Difficulty::Growing => 5,
         Difficulty::Super => 7,
     };
@@ -633,6 +645,7 @@ pub fn gen_missing_letter(diff: Difficulty, _boost: u32) -> Question {
 // 8. Picture Words (Vocab)
 pub fn gen_vocab(diff: Difficulty, _boost: u32) -> Question {
     let max_len = match diff {
+        Difficulty::PreK => 3,
         Difficulty::Little => 4,
         Difficulty::Growing => 6,
         Difficulty::Super => 8,
@@ -705,8 +718,274 @@ pub fn gen_rhyme(_diff: Difficulty, _boost: u32) -> Question {
     }
 }
 
+pub fn gen_colors_shapes(_diff: Difficulty, _boost: u32) -> Question {
+    // 50% color question, 50% shape question
+    let ask_color = rnd(0, 1) == 0;
+
+    if ask_color {
+        let target = pick(COLORS);
+        let distractors: Vec<&str> = COLORS
+            .iter()
+            .filter(|c| c.name != target.name)
+            .map(|c| c.name)
+            .collect();
+        let mut dist_shuffled = shuffle(&distractors);
+        let mut choices = vec![target.name.to_string()];
+        choices.push(dist_shuffled.pop().unwrap().to_string());
+        choices.push(dist_shuffled.pop().unwrap().to_string());
+        let choices = shuffle(&choices);
+
+        Question {
+            visual: target.emoji.to_string(),
+            visual_small: false,
+            prompt: format!("What color is this circle?"),
+            sub: "Look closely at the bright color and tap its name!".to_string(),
+            choices,
+            answer: target.name.to_string(),
+            reveal: None,
+            speak: format!("What color is this?"),
+            technique: Some(Technique {
+                name: "🌈 Color Recognition".to_string(),
+                steps: vec![
+                    format!("Look at the color {}", target.emoji),
+                    format!("It is the color {}.", target.name),
+                ],
+                worked: format!("{} is {}", target.emoji, target.name),
+            }),
+            is_spell: false,
+            word: None,
+        }
+    } else {
+        let target = pick(SHAPES);
+        let distractors: Vec<&str> = SHAPES
+            .iter()
+            .filter(|s| s.name != target.name)
+            .map(|s| s.name)
+            .collect();
+        let mut dist_shuffled = shuffle(&distractors);
+        let mut choices = vec![target.name.to_string()];
+        choices.push(dist_shuffled.pop().unwrap().to_string());
+        choices.push(dist_shuffled.pop().unwrap().to_string());
+        let choices = shuffle(&choices);
+
+        Question {
+            visual: target.emoji.to_string(),
+            visual_small: false,
+            prompt: format!("What shape is this?"),
+            sub: format!("Hint: This shape is {}!", target.desc),
+            choices,
+            answer: target.name.to_string(),
+            reveal: None,
+            speak: format!("What shape is this?"),
+            technique: Some(Technique {
+                name: "📐 Shape Explorer".to_string(),
+                steps: vec![
+                    format!("Look at {}: it has {}.", target.emoji, target.desc),
+                    format!("That makes it a {}!", target.name),
+                ],
+                worked: format!("{} is a {}", target.emoji, target.name),
+            }),
+            is_spell: false,
+            word: None,
+        }
+    }
+}
+
+pub fn gen_animal_sounds(_diff: Difficulty, _boost: u32) -> Question {
+    let target = pick(ANIMAL_SOUNDS);
+    // 50% chance: prompt is the sound ("Who says Moo moo?"), choices are animal emojis + names
+    // 50% chance: prompt is the animal ("What does Dog say?"), choices are sounds
+    let ask_who = rnd(0, 1) == 0;
+
+    if ask_who {
+        let distractors: Vec<String> = ANIMAL_SOUNDS
+            .iter()
+            .filter(|a| a.animal != target.animal)
+            .map(|a| format!("{} {}", a.emoji, a.animal))
+            .collect();
+        let mut dist_shuffled = shuffle(&distractors);
+        let ans_str = format!("{} {}", target.emoji, target.animal);
+        let mut choices = vec![ans_str.clone()];
+        choices.push(dist_shuffled.pop().unwrap());
+        choices.push(dist_shuffled.pop().unwrap());
+        let choices = shuffle(&choices);
+
+        Question {
+            visual: "🎶".to_string(),
+            visual_small: false,
+            prompt: format!("\"{}\"", target.sound),
+            sub: format!("Who makes this sound? Listen and tap the animal!"),
+            choices,
+            answer: ans_str.clone(),
+            reveal: None,
+            speak: format!("Who says {}?", target.sound),
+            technique: Some(Technique {
+                name: "🦁 Animal Safari".to_string(),
+                steps: vec![
+                    format!("Hear the sound: \"{}\"!", target.sound),
+                    format!("The {} {} makes that sound!", target.emoji, target.animal),
+                ],
+                worked: format!("{} says \"{}\"", target.animal, target.sound),
+            }),
+            is_spell: false,
+            word: None,
+        }
+    } else {
+        let distractors: Vec<&str> = ANIMAL_SOUNDS
+            .iter()
+            .filter(|a| a.animal != target.animal)
+            .map(|a| a.sound)
+            .collect();
+        let mut dist_shuffled = shuffle(&distractors);
+        let mut choices = vec![target.sound.to_string()];
+        choices.push(dist_shuffled.pop().unwrap().to_string());
+        choices.push(dist_shuffled.pop().unwrap().to_string());
+        let choices = shuffle(&choices);
+
+        Question {
+            visual: target.emoji.to_string(),
+            visual_small: false,
+            prompt: format!("What sound does the {} make?", target.animal),
+            sub: format!("Tap the friendly sound the {} makes!", target.animal),
+            choices,
+            answer: target.sound.to_string(),
+            reveal: None,
+            speak: format!("What sound does the {} make?", target.animal),
+            technique: Some(Technique {
+                name: "🦁 Animal Safari".to_string(),
+                steps: vec![
+                    format!("Look at the {} {}", target.emoji, target.animal),
+                    format!("A {} says \"{}\"!", target.animal, target.sound),
+                ],
+                worked: format!("{} says \"{}\"", target.animal, target.sound),
+            }),
+            is_spell: false,
+            word: None,
+        }
+    }
+}
+
+pub fn gen_big_small(_diff: Difficulty, _boost: u32) -> Question {
+    let pair = pick(COMPARISONS);
+    let ask_bigger = rnd(0, 1) == 0;
+
+    let ans_emoji = if ask_bigger { pair.big_emoji } else { pair.small_emoji };
+    let ans_name = if ask_bigger { pair.big } else { pair.small };
+
+    let opt_a = format!("{} {}", pair.big_emoji, pair.big);
+    let opt_b = format!("{} {}", pair.small_emoji, pair.small);
+    let target_choice = format!("{} {}", ans_emoji, ans_name);
+
+    let choices = shuffle(&[opt_a, opt_b]);
+
+    let prompt_text = if ask_bigger {
+        "Which one is BIGGER? 🔍".to_string()
+    } else {
+        "Which one is SMALLER? 🔍".to_string()
+    };
+
+    Question {
+        visual: format!("{} vs {}", pair.big_emoji, pair.small_emoji),
+        visual_small: false,
+        prompt: prompt_text.clone(),
+        sub: format!("Compare the two items. Tap the {} one!", if ask_bigger { "bigger" } else { "smaller" }),
+        choices,
+        answer: target_choice,
+        reveal: None,
+        speak: prompt_text,
+        technique: Some(Technique {
+            name: "🔍 Comparing Sizes".to_string(),
+            steps: vec![
+                format!("Look at {} ({}) and {} ({})", pair.big_emoji, pair.big, pair.small_emoji, pair.small),
+                format!("A {} is much larger in real life than a {}!", pair.big, pair.small),
+            ],
+            worked: format!("{} is bigger, {} is smaller", pair.big, pair.small),
+        }),
+        is_spell: false,
+        word: None,
+    }
+}
+
+pub fn gen_abc_phonics(_diff: Difficulty, _boost: u32) -> Question {
+    let target = pick(ABC_LIST);
+    // 50% chance: prompt is "A is for...?", choices are words/emojis
+    // 50% chance: prompt is "Which letter does 🍎 Apple start with?", choices are letters
+    let ask_word = rnd(0, 1) == 0;
+
+    if ask_word {
+        let distractors: Vec<String> = ABC_LIST
+            .iter()
+            .filter(|a| a.letter != target.letter)
+            .map(|a| format!("{} {}", a.emoji, a.word))
+            .collect();
+        let mut dist_shuffled = shuffle(&distractors);
+        let ans_str = format!("{} {}", target.emoji, target.word);
+        let mut choices = vec![ans_str.clone()];
+        choices.push(dist_shuffled.pop().unwrap());
+        choices.push(dist_shuffled.pop().unwrap());
+        let choices = shuffle(&choices);
+
+        Question {
+            visual: format!("Letter {}", target.letter),
+            visual_small: false,
+            prompt: format!("{} is for...", target.letter),
+            sub: format!("Which picture starts with the letter {}?", target.letter),
+            choices,
+            answer: ans_str,
+            reveal: None,
+            speak: format!("{} is for what?", target.letter),
+            technique: Some(Technique {
+                name: "🔤 First Sound Clue".to_string(),
+                steps: vec![
+                    format!("The letter {} makes the sound /{}/", target.letter, target.letter.to_lowercase()),
+                    format!("{} {} starts with the letter {}!", target.emoji, target.word, target.letter),
+                ],
+                worked: format!("{} is for {}", target.letter, target.word),
+            }),
+            is_spell: false,
+            word: None,
+        }
+    } else {
+        let distractors: Vec<&str> = ABC_LIST
+            .iter()
+            .filter(|a| a.letter != target.letter)
+            .map(|a| a.letter)
+            .collect();
+        let mut dist_shuffled = shuffle(&distractors);
+        let mut choices = vec![target.letter.to_string()];
+        choices.push(dist_shuffled.pop().unwrap().to_string());
+        choices.push(dist_shuffled.pop().unwrap().to_string());
+        let choices = shuffle(&choices);
+
+        Question {
+            visual: target.emoji.to_string(),
+            visual_small: false,
+            prompt: format!("Which letter does {} start with?", target.word),
+            sub: format!("Say \"{}\" out loud — listen to the first sound!", target.word),
+            choices,
+            answer: target.letter.to_string(),
+            reveal: None,
+            speak: format!("Which letter does {} start with?", target.word),
+            technique: Some(Technique {
+                name: "🔤 Sound It Out".to_string(),
+                steps: vec![
+                    format!("Say {} slowly: /{}.../", target.word, target.letter.to_lowercase()),
+                    format!("The first letter is {}!", target.letter),
+                ],
+                worked: format!("{} starts with letter {}", target.word, target.letter),
+            }),
+            is_spell: false,
+            word: None,
+        }
+    }
+}
+
 pub fn generate_question(game_id: &str, diff: Difficulty, boost: u32) -> Question {
     match game_id {
+        "colorsShapes" => gen_colors_shapes(diff, boost),
+        "animalSounds" => gen_animal_sounds(diff, boost),
+        "bigSmall" => gen_big_small(diff, boost),
+        "abcPhonics" => gen_abc_phonics(diff, boost),
         "counting" => gen_counting(diff, boost),
         "add" => gen_add(diff, boost),
         "subtract" => gen_subtract(diff, boost),
@@ -717,18 +996,39 @@ pub fn generate_question(game_id: &str, diff: Difficulty, boost: u32) -> Questio
         "vocab" => gen_vocab(diff, boost),
         "rhyme" => gen_rhyme(diff, boost),
         _ => {
-            // "adventure" or unknown -> pick random game
-            let all_ids = [
-                "counting",
-                "add",
-                "subtract",
-                "multiply",
-                "missing",
-                "spell",
-                "missingLetter",
-                "vocab",
-                "rhyme",
-            ];
+            // "adventure" or unknown -> pick random game appropriate for difficulty
+            let all_ids = match diff {
+                Difficulty::PreK => vec![
+                    "colorsShapes",
+                    "animalSounds",
+                    "bigSmall",
+                    "abcPhonics",
+                    "counting",
+                    "vocab",
+                ],
+                Difficulty::Little => vec![
+                    "colorsShapes",
+                    "animalSounds",
+                    "bigSmall",
+                    "abcPhonics",
+                    "counting",
+                    "add",
+                    "spell",
+                    "vocab",
+                    "rhyme",
+                ],
+                _ => vec![
+                    "counting",
+                    "add",
+                    "subtract",
+                    "multiply",
+                    "missing",
+                    "spell",
+                    "missingLetter",
+                    "vocab",
+                    "rhyme",
+                ],
+            };
             let picked_id = *pick(&all_ids);
             generate_question(picked_id, diff, boost)
         }

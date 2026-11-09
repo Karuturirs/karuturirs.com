@@ -1,5 +1,6 @@
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub enum Difficulty {
+    PreK,    // Ages 3-4
     Little,  // Ages 4-5
     Growing, // Ages 6-7
     Super,   // Ages 8-9
@@ -8,6 +9,7 @@ pub enum Difficulty {
 impl Difficulty {
     pub fn as_str(&self) -> &'static str {
         match self {
+            Difficulty::PreK => "prek",
             Difficulty::Little => "little",
             Difficulty::Growing => "growing",
             Difficulty::Super => "super",
@@ -16,6 +18,7 @@ impl Difficulty {
 
     pub fn from_str(s: &str) -> Self {
         match s {
+            "prek" => Difficulty::PreK,
             "little" => Difficulty::Little,
             "super" => Difficulty::Super,
             _ => Difficulty::Growing,
@@ -24,6 +27,7 @@ impl Difficulty {
 
     pub fn label(&self) -> &'static str {
         match self {
+            Difficulty::PreK => "🎈 Pre-K Explorers",
             Difficulty::Little => "🌱 Little Learners",
             Difficulty::Growing => "🚀 Growing Minds",
             Difficulty::Super => "⚡ Super Challengers",
@@ -32,6 +36,7 @@ impl Difficulty {
 
     pub fn age_sub(&self) -> &'static str {
         match self {
+            Difficulty::PreK => "Ages 3–4 · Colors, shapes, animals & ABCs",
             Difficulty::Little => "Ages 4–5 · Numbers to 10 · 3-letter words",
             Difficulty::Growing => "Ages 6–7 · Numbers to 30 · 2s, 5s, 10s",
             Difficulty::Super => "Ages 8–9 · Big numbers · Full tables & patterns",
