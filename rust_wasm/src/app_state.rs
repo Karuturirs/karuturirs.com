@@ -2,7 +2,7 @@ use super::audio::AudioManager;
 use super::home::view::render_home_html;
 use super::kids::data::{GAMES_LIST, PRAISES};
 use super::kids::generators::{generate_question, pick};
-use super::kids::models::{Difficulty, GameSession, PlayStyle};
+use super::kids::models::{Difficulty, GameSession, PlayStyle, ReviewItem};
 use super::kids::view::{render_game_session, render_kids_home, render_result_view};
 use super::storage::{
     get_storage_bool, get_storage_item, get_storage_u32, set_storage_bool, set_storage_item,
@@ -29,6 +29,9 @@ pub struct AppState {
     pub feedback_cls: String,
     pub level_up_msg: Option<String>,
     pub last_result: Option<(u32, u32, u32, String, String, String)>,
+    pub last_history: Vec<ReviewItem>,
+    pub result_queue_filter: String,
+    pub last_game_id: String,
 }
 
 thread_local! {
@@ -87,6 +90,9 @@ impl AppState {
             feedback_cls: "feedback".to_string(),
             level_up_msg: None,
             last_result: None,
+            last_history: Vec::new(),
+            result_queue_filter: "all".to_string(),
+            last_game_id: "adventure".to_string(),
         }
     }
 
@@ -122,6 +128,25 @@ impl AppState {
             let ans = sess.current.answer.clone();
             let rev = sess.current.reveal.clone();
             let has_tech = sess.current.technique.is_some();
+
+            let item = ReviewItem {
+                idx: sess.idx + 1,
+                prompt: sess.current.prompt.clone(),
+                sub: sess.current.sub.clone(),
+                visual: sess.current.visual.clone(),
+                user_answer: val.to_string(),
+                correct_answer: sess.current.answer.clone(),
+                is_correct: correct,
+                technique_name: sess.current.technique.as_ref().map(|t| t.name.clone()),
+                technique_worked: sess.current.technique.as_ref().map(|t| t.worked.clone()),
+                technique_steps: sess
+                    .current
+                    .technique
+                    .as_ref()
+                    .map(|t| t.steps.clone())
+                    .unwrap_or_default(),
+            };
+            sess.history.push(item);
 
             if correct {
                 sess.score += 1;
@@ -230,6 +255,33 @@ impl AppState {
                     sess.locked = true;
                     sess.score += 1;
                 }
+
+                let item = ReviewItem {
+                    idx: sess.idx + 1,
+                    prompt: sess.current.prompt.clone(),
+                    sub: sess.current.sub.clone(),
+                    visual: sess.current.visual.clone(),
+                    user_answer: spell_built_str.clone(),
+                    correct_answer: target_word.clone(),
+                    is_correct,
+                    technique_name: sess.current.technique.as_ref().map(|t| t.name.clone()),
+                    technique_worked: sess.current.technique.as_ref().map(|t| t.worked.clone()),
+                    technique_steps: sess
+                        .current
+                        .technique
+                        .as_ref()
+                        .map(|t| t.steps.clone())
+                        .unwrap_or_default(),
+                };
+                if let Some(last) = sess.history.last_mut() {
+                    if last.idx == sess.idx + 1 {
+                        *last = item;
+                    } else {
+                        sess.history.push(item);
+                    }
+                } else {
+                    sess.history.push(item);
+                }
             }
         }
 
@@ -284,6 +336,25 @@ impl AppState {
                     sess.locked = true;
                     sess.tech_open = true;
                     ans_str = sess.current.answer.clone();
+
+                    let item = ReviewItem {
+                        idx: sess.idx + 1,
+                        prompt: sess.current.prompt.clone(),
+                        sub: sess.current.sub.clone(),
+                        visual: sess.current.visual.clone(),
+                        user_answer: "⏰ Time out".to_string(),
+                        correct_answer: ans_str.clone(),
+                        is_correct: false,
+                        technique_name: sess.current.technique.as_ref().map(|t| t.name.clone()),
+                        technique_worked: sess.current.technique.as_ref().map(|t| t.worked.clone()),
+                        technique_steps: sess
+                            .current
+                            .technique
+                            .as_ref()
+                            .map(|t| t.steps.clone())
+                            .unwrap_or_default(),
+                    };
+                    sess.history.push(item);
                 }
             }
         }
@@ -371,6 +442,8 @@ impl AppState {
 
         self.stars += stars;
         self.games_done += 1;
+        self.last_history = sess.history.clone();
+        self.last_game_id = sess.game_id.clone();
 
         if sess.game_id != "adventure" {
             let prev = self.best_scores.get(&sess.game_id).copied();
@@ -424,7 +497,16 @@ pub fn render_current_view() {
         let html = if state.current_path.starts_with("/kids-school-learning") {
             if state.showing_result {
                 if let Some((score, total, stars, ref title, ref text, ref tip)) = state.last_result {
-                    render_result_view(score, total, stars, title, text, tip)
+                    render_result_view(
+                        score,
+                        total,
+                        stars,
+                        title,
+                        text,
+                        tip,
+                        &state.last_history,
+                        &state.result_queue_filter,
+                    )
                 } else {
                     render_kids_home(
                         state.diff,

@@ -149,6 +149,9 @@ pub fn kids_start_game(game_id: &str) {
             tech_open: false,
             time_left: time_total,
             time_total,
+            history: Vec::new(),
+            queue_filter: "all".to_string(),
+            queue_open_mobile: false,
         });
 
         if state.style == PlayStyle::Clock {
@@ -315,7 +318,8 @@ pub fn kids_finish_game() {
 
 #[wasm_bindgen]
 pub fn kids_replay_game() {
-    kids_start_game("adventure");
+    let gid = STATE.with(|s| s.borrow().last_game_id.clone());
+    kids_start_game(&gid);
 }
 
 #[wasm_bindgen]
@@ -324,6 +328,7 @@ pub fn kids_keep_going() {
         let mut state = s.borrow_mut();
         let prev_score = state.last_result.as_ref().map(|r| r.0).unwrap_or(0);
         let prev_total = state.last_result.as_ref().map(|r| r.1).unwrap_or(10);
+        let last_hist = state.last_history.clone();
         state.showing_result = false;
 
         let q = generate_question("adventure", state.diff, 0);
@@ -353,6 +358,9 @@ pub fn kids_keep_going() {
             tech_open: false,
             time_left: time_total,
             time_total,
+            history: last_hist,
+            queue_filter: "all".to_string(),
+            queue_open_mobile: false,
         });
 
         if state.style == PlayStyle::Clock {
@@ -363,6 +371,72 @@ pub fn kids_keep_going() {
     });
 
     render_current_view();
+}
+
+#[wasm_bindgen]
+pub fn kids_set_queue_filter(filter: &str) {
+    STATE.with(|s| {
+        let mut state = s.borrow_mut();
+        if let Some(sess) = state.session.as_mut() {
+            sess.queue_filter = filter.to_string();
+        } else {
+            state.result_queue_filter = filter.to_string();
+        }
+    });
+    render_current_view();
+}
+
+#[wasm_bindgen]
+pub fn kids_toggle_queue_mobile() {
+    STATE.with(|s| {
+        let mut state = s.borrow_mut();
+        if let Some(sess) = state.session.as_mut() {
+            sess.queue_open_mobile = !sess.queue_open_mobile;
+        }
+    });
+    render_current_view();
+}
+
+#[wasm_bindgen]
+pub fn kids_read_queue_item(idx: usize) {
+    STATE.with(|s| {
+        let state = s.borrow();
+        let history = if let Some(sess) = &state.session {
+            &sess.history
+        } else {
+            &state.last_history
+        };
+        if let Some(item) = history.get(idx) {
+            let mut text = format!("Question {}: {}. ", item.idx, item.prompt);
+            if !item.sub.is_empty() {
+                text.push_str(&item.sub);
+                text.push_str(". ");
+            }
+            if item.is_correct {
+                text.push_str(&format!(
+                    "You got this right! Your answer was {}. Excellent job!",
+                    item.user_answer
+                ));
+            } else {
+                text.push_str(&format!(
+                    "You chose {}, but the correct answer is {}. ",
+                    item.user_answer, item.correct_answer
+                ));
+                if let Some(name) = &item.technique_name {
+                    text.push_str(&format!("Here is the trick: {}. ", name));
+                }
+                if !item.technique_steps.is_empty() {
+                    text.push_str(&item.technique_steps.join(". "));
+                }
+                if let Some(w) = &item.technique_worked {
+                    if !w.is_empty() {
+                        text.push_str(&format!(". Worked answer: {w}."));
+                    }
+                }
+            }
+            speak(&text);
+        }
+    });
 }
 
 #[wasm_bindgen]

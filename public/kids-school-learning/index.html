@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kids School Learning | Fun Maths & English Games (Rust WASM)</title>
-  <meta name="description" content="Interactive Maths and English games for kids built with Rust WebAssembly. Counting, Addition, Subtraction, Times Tables, Spelling, Missing Letters, Rhymes, and The Big Adventure!">
+  <title>Kids School Learning | Fun Maths &amp; English Games</title>
+  <meta name="description" content="Interactive Maths and English games for kids. Counting, Addition, Subtraction, Times Tables, Spelling, Missing Letters, Rhymes, and The Big Adventure!">
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
   <link rel="stylesheet" href="/css/style.css">
 </head>
@@ -16,7 +16,7 @@
       <div>
         <div style="font-size: 3.5rem; margin-bottom: 1rem; animation: floatMascot 2s ease-in-out infinite;">⭐ 🚀 🎈</div>
         <h2 style="font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem;">Loading Kids School Learning Games...</h2>
-        <p style="color: #6366f1; font-size: 1.15rem; font-family: 'Nunito', sans-serif; font-weight: 600;">Powering up with Rust WebAssembly!</p>
+        <p style="color: #6366f1; font-size: 1.15rem; font-family: 'Nunito', sans-serif; font-weight: 600;">Starting your fun learning adventure...</p>
       </div>
     </div>
   </div>
@@ -279,9 +279,12 @@
         window.kidsSpeakQuestion = window.speakQuestion = wasm.kids_speak_question;
         window.kidsQuitGame = window.quitGame = wasm.kids_quit_game;
         window.kidsFinishGame = window.finishGame = wasm.kids_finish_game;
-        window.kidsReplayGame = window.replayGame = wasm.kids_retry_game;
+        window.kidsReplayGame = window.replayGame = wasm.kids_replay_game;
         window.kidsKeepGoing = window.keepGoing = wasm.kids_keep_going;
         window.kidsShowHome = window.showHome = wasm.kids_show_home;
+        window.kidsSetQueueFilter = window.setQueueFilter = wasm.kids_set_queue_filter;
+        window.kidsToggleQueueMobile = window.toggleQueueMobile = wasm.kids_toggle_queue_mobile;
+        window.kidsReadQueueItem = window.readQueueItem = wasm.kids_read_queue_item;
         window.navigateTo = wasm.navigate_to;
 
         console.log('Rust WebAssembly Kids Learning App loaded successfully!');

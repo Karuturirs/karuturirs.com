@@ -103,6 +103,20 @@ pub struct GameMeta {
 }
 
 #[derive(Clone, Debug)]
+pub struct ReviewItem {
+    pub idx: u32,
+    pub prompt: String,
+    pub sub: String,
+    pub visual: String,
+    pub user_answer: String,
+    pub correct_answer: String,
+    pub is_correct: bool,
+    pub technique_name: Option<String>,
+    pub technique_worked: Option<String>,
+    pub technique_steps: Vec<String>,
+}
+
+#[derive(Clone, Debug)]
 pub struct GameSession {
     pub game_id: String,
     pub title: String,
@@ -118,4 +132,7 @@ pub struct GameSession {
     pub tech_open: bool,
     pub time_left: u32,
     pub time_total: u32,
+    pub history: Vec<ReviewItem>,
+    pub queue_filter: String,
+    pub queue_open_mobile: bool,
 }

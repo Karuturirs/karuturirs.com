@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ravi Sankar Karuturi | Rust WASM Portfolio & Kids School Learning</title>
-  <meta name="description" content="Personal engineering portfolio of Ravi Sankar Karuturi and interactive Rust WebAssembly Kids School Learning Games.">
+  <title>Ravi Sankar Karuturi | Lead Software Engineer</title>
+  <meta name="description" content="Personal engineering portfolio of Ravi Sankar Karuturi and interactive Kids School Learning Games.">
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
   <link rel="stylesheet" href="/css/style.css">
 </head>
@@ -14,9 +14,9 @@
     <!-- Initial Loading State -->
     <div style="min-height: 100vh; display: flex; align-items: center; justify-content: center; background: #0b0f19; color: #f9fafb; font-family: 'Nunito', sans-serif; text-align: center; padding: 2rem;">
       <div>
-        <div style="font-size: 3rem; margin-bottom: 1rem; animation: pulse 1.5s ease-in-out infinite;">🦀 ⚡ ✨</div>
-        <h2 style="font-size: 1.75rem; font-weight: 700; margin-bottom: 0.5rem; font-family: 'Fredoka', sans-serif;">Loading Rust WebAssembly App...</h2>
-        <p style="color: #9ca3af; font-size: 1rem;">Preparing high-speed WebAssembly runtime & learning arena</p>
+        <div style="font-size: 3rem; margin-bottom: 1rem; animation: pulse 1.5s ease-in-out infinite;">👨‍💻 ⚡ ✨</div>
+        <h2 style="font-size: 1.75rem; font-weight: 700; margin-bottom: 0.5rem; font-family: 'Fredoka', sans-serif;">Loading Karuturirs.com...</h2>
+        <p style="color: #9ca3af; font-size: 1rem;">Preparing interactive portfolio &amp; educational arena...</p>
       </div>
     </div>
   </div>
@@ -282,9 +282,12 @@
         window.kidsSpeakQuestion = window.speakQuestion = wasm.kids_speak_question;
         window.kidsQuitGame = window.quitGame = wasm.kids_quit_game;
         window.kidsFinishGame = window.finishGame = wasm.kids_finish_game;
-        window.kidsReplayGame = window.replayGame = wasm.kids_retry_game;
+        window.kidsReplayGame = window.replayGame = wasm.kids_replay_game;
         window.kidsKeepGoing = window.keepGoing = wasm.kids_keep_going;
         window.kidsShowHome = window.showHome = wasm.kids_show_home;
+        window.kidsSetQueueFilter = window.setQueueFilter = wasm.kids_set_queue_filter;
+        window.kidsToggleQueueMobile = window.toggleQueueMobile = wasm.kids_toggle_queue_mobile;
+        window.kidsReadQueueItem = window.readQueueItem = wasm.kids_read_queue_item;
         window.navigateTo = wasm.navigate_to;
 
         console.log('Rust WebAssembly loaded successfully!');

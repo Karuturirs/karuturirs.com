@@ -26,6 +26,13 @@ export function kids_quit_game() {
     wasm.kids_quit_game();
 }
 
+/**
+ * @param {number} idx
+ */
+export function kids_read_queue_item(idx) {
+    wasm.kids_read_queue_item(idx);
+}
+
 export function kids_replay_game() {
     wasm.kids_replay_game();
 }
@@ -37,6 +44,15 @@ export function kids_set_diff(diff) {
     const ptr0 = passStringToWasm0(diff, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
     const len0 = WASM_VECTOR_LEN;
     wasm.kids_set_diff(ptr0, len0);
+}
+
+/**
+ * @param {string} filter
+ */
+export function kids_set_queue_filter(filter) {
+    const ptr0 = passStringToWasm0(filter, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+    const len0 = WASM_VECTOR_LEN;
+    wasm.kids_set_queue_filter(ptr0, len0);
 }
 
 /**
@@ -84,6 +100,10 @@ export function kids_tap_spell_tile(tile_idx, ch_str) {
 
 export function kids_tick_clock() {
     wasm.kids_tick_clock();
+}
+
+export function kids_toggle_queue_mobile() {
+    wasm.kids_toggle_queue_mobile();
 }
 
 export function kids_toggle_sound() {

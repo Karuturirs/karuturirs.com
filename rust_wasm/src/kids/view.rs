@@ -1,5 +1,5 @@
 use super::data::GAMES_LIST;
-use super::models::{Difficulty, GameSession, PlayStyle};
+use super::models::{Difficulty, GameSession, PlayStyle, ReviewItem};
 
 pub fn render_kids_home(
     diff: Difficulty,
@@ -79,7 +79,7 @@ pub fn render_kids_home(
   <!-- TOP STATS & NAV -->
   <header class="kids-top-nav">
     <a href="/" class="nav-back-btn" onclick="event.preventDefault(); window.navigateTo('/');">
-      &larr; Back to Karuturi.com
+      &larr; Back to karuturirs.com
     </a>
     <div class="top-stats-row">
       <span class="stat-pill"><span class="pill-icon">⭐</span> <b id="statStars">{stars}</b> stars</span>
@@ -95,7 +95,7 @@ pub fn render_kids_home(
   <!-- HERO BANNER -->
   <section class="kids-hero">
     <div class="hero-text-col">
-      <span class="subhead-pill">✨ Powered by Rust WebAssembly</span>
+      <span class="subhead-pill">✨ 100% Free &bull; Ad-Free &bull; Works Offline</span>
       <h1>Kids <span class="m">Maths</span> &amp; <span class="e">English</span> Games</h1>
       <p>
         Fun, bite-sized learning games for little explorers! Practise numbers, counting, addition, times tables, spelling, phonics and rhymes — with step-by-step tricks that teach you <em>how</em> to think.
@@ -285,12 +285,12 @@ pub fn render_kids_home(
       <li><strong>Step-by-Step Tricks:</strong> Every question includes a "Show me how" breakdown showing mental models.</li>
       <li><strong>Audio &amp; Speech:</strong> Tones provide auditory satisfaction, while Speech Synthesis reads questions aloud for emerging readers.</li>
       <li><strong>Adaptive Feedback:</strong> Scoring 3 in a row triggers an adaptive challenge boost with positive encouragement.</li>
-      <li><strong>Privacy &amp; Offline:</strong> Completely client-side WebAssembly. No cookies, no tracking, works smoothly offline!</li>
+      <li><strong>Privacy &amp; Offline:</strong> Completely client-side. No cookies, no tracking, works smoothly offline!</li>
     </ul>
   </section>
 
   <footer>
-    <p>&copy; karuturirs.com &middot; Built with Rust &amp; WebAssembly &middot; Deployed on Netlify</p>
+    <p>&copy; karuturirs.com &middot; Educational Games for Kids &middot; Deployed on Netlify</p>
   </footer>
 </div>
 "#,
@@ -316,6 +316,197 @@ pub fn render_kids_home(
         prek_cards = prek_cards,
         maths_cards = maths_cards,
         english_cards = english_cards
+    )
+}
+
+pub fn render_review_queue(
+    history: &[ReviewItem],
+    filter: &str,
+    _is_mobile_open: bool,
+    is_live_game: bool,
+) -> String {
+    let total_count = history.len();
+    let right_count = history.iter().filter(|i| i.is_correct).count();
+    let wrong_count = history.iter().filter(|i| !i.is_correct).count();
+
+    let all_active = if filter == "all" || (filter != "wrong" && filter != "right") {
+        " active"
+    } else {
+        ""
+    };
+    let wrong_active = if filter == "wrong" { " active" } else { "" };
+    let right_active = if filter == "right" { " active" } else { "" };
+
+    let items_html = if history.is_empty() {
+        r#"
+<div class="queue-empty">
+  <div class="queue-empty-mascot">🎯</div>
+  <h4>Learning Queue Waiting</h4>
+  <p>Answer questions in the arena! Everything you get right and wrong will queue up here with step-by-step tricks so you can review anytime.</p>
+</div>
+"#
+        .to_string()
+    } else {
+        let mut list = String::new();
+        // Show in reverse order (most recent first) so the latest answered question is at the top of the queue
+        for (orig_idx, item) in history.iter().enumerate().rev() {
+            let matches = match filter {
+                "wrong" => !item.is_correct,
+                "right" => item.is_correct,
+                _ => true,
+            };
+            if !matches {
+                continue;
+            }
+
+            let card_status_cls = if item.is_correct {
+                "qitem-right"
+            } else {
+                "qitem-wrong"
+            };
+            let badge_html = if item.is_correct {
+                r#"<span class="qitem-badge badge-right">✅ Done Right!</span>"#
+            } else {
+                r#"<span class="qitem-badge badge-wrong">❌ Needs Practice</span>"#
+            };
+
+            let answer_display = if item.is_correct {
+                format!(
+                    r#"<div class="qitem-ans-row right-ans"><span class="lbl">Your Answer:</span> <strong class="ans-correct">{}</strong></div>"#,
+                    item.user_answer
+                )
+            } else {
+                format!(
+                    r#"<div class="qitem-ans-compare">
+  <div class="ans-bubble your-pick"><span class="lbl">You chose:</span> <span class="val-wrong">{}</span></div>
+  <div class="ans-bubble correct-pick"><span class="lbl">Correct:</span> <strong class="val-right">{}</strong></div>
+</div>"#,
+                    item.user_answer, item.correct_answer
+                )
+            };
+
+            let trick_html = if let Some(ref tech_name) = item.technique_name {
+                let steps_lis: Vec<String> = item
+                    .technique_steps
+                    .iter()
+                    .map(|s| format!("<li>{}</li>", s))
+                    .collect();
+                let worked_line = if let Some(ref w) = item.technique_worked {
+                    if !w.is_empty() {
+                        format!(
+                            r#"<div class="qitem-worked">✏️ Worked: <strong>{}</strong></div>"#,
+                            w
+                        )
+                    } else {
+                        String::new()
+                    }
+                } else {
+                    String::new()
+                };
+                format!(
+                    r#"<div class="qitem-trick-box">
+  <div class="trick-title"><span class="trick-bulb">💡</span> {}</div>
+  <ol class="trick-steps">{}</ol>
+  {}
+</div>"#,
+                    tech_name,
+                    steps_lis.join(""),
+                    worked_line
+                )
+            } else {
+                String::new()
+            };
+
+            let sub_line = if !item.sub.is_empty() {
+                format!(r#"<div class="qitem-sub">{}</div>"#, item.sub)
+            } else {
+                String::new()
+            };
+
+            list.push_str(&format!(
+                r#"
+<div class="qitem {card_status_cls}">
+  <div class="qitem-top">
+    <span class="qitem-idx">Q{idx}</span>
+    {badge}
+    <button class="qitem-read-btn" onclick="window.kidsReadQueueItem({orig_idx})" title="Listen to question and step-by-step trick" aria-label="Listen to explanation">
+      🗣️ Read Trick
+    </button>
+  </div>
+  <div class="qitem-prompt">{prompt}</div>
+  {sub_line}
+  {answer_display}
+  {trick_html}
+</div>
+"#,
+                card_status_cls = card_status_cls,
+                idx = item.idx,
+                badge = badge_html,
+                orig_idx = orig_idx,
+                prompt = item.prompt,
+                sub_line = sub_line,
+                answer_display = answer_display,
+                trick_html = trick_html
+            ));
+        }
+
+        if list.is_empty() {
+            let empty_filter_msg = if filter == "wrong" {
+                "🌟 Amazing! No mistakes so far — you're acing every question!"
+            } else {
+                "No correct answers yet in this filter. Keep going — you can do it!"
+            };
+            format!(
+                r#"<div class="queue-empty-filter"><p>{}</p></div>"#,
+                empty_filter_msg
+            )
+        } else {
+            list
+        }
+    };
+
+    let title_prefix = if is_live_game {
+        "📋 Live Learning Queue"
+    } else {
+        "📋 Complete Round Review"
+    };
+
+    format!(
+        r#"
+<div class="review-queue-card">
+  <div class="queue-header">
+    <div class="queue-title-wrap">
+      <h3>{title_prefix}</h3>
+      <div class="queue-counts">
+        <span class="count-tag count-right">✅ {right_count} Right</span>
+        <span class="count-tag count-wrong">❌ {wrong_count} Wrong</span>
+      </div>
+    </div>
+    <div class="queue-filters">
+      <button class="qfilter-btn{all_active}" onclick="window.kidsSetQueueFilter('all')">
+        All ({total_count})
+      </button>
+      <button class="qfilter-btn wrong-filter{wrong_active}" onclick="window.kidsSetQueueFilter('wrong')">
+        ❌ Review ({wrong_count})
+      </button>
+      <button class="qfilter-btn right-filter{right_active}" onclick="window.kidsSetQueueFilter('right')">
+        ✅ Right ({right_count})
+      </button>
+    </div>
+  </div>
+  <div class="queue-items-scroll">
+    {items_html}
+  </div>
+</div>
+"#,
+        title_prefix = title_prefix,
+        right_count = right_count,
+        wrong_count = wrong_count,
+        total_count = total_count,
+        all_active = all_active,
+        wrong_active = wrong_active,
+        right_active = right_active,
+        items_html = items_html
     )
 }
 
@@ -378,7 +569,10 @@ pub fn render_game_session(
         Some(t) => {
             let lis: Vec<String> = t.steps.iter().map(|s| format!("<li>{s}</li>")).collect();
             let worked_line = if !t.worked.is_empty() {
-                format!(r#"<div class="tryline">✏️ Worked answer: {} — now try tapping your answer!</div>"#, t.worked)
+                format!(
+                    r#"<div class="tryline">✏️ Worked answer: {} — now try tapping your answer!</div>"#,
+                    t.worked
+                )
             } else {
                 String::new()
             };
@@ -403,7 +597,6 @@ pub fn render_game_session(
 
     // Render Answer Area
     let answer_area_html = if q.is_spell {
-        // Spelling blanks + tiles
         let target_len = match &q.word {
             Some(w) => w.len(),
             None => q.answer.len(),
@@ -422,12 +615,10 @@ pub fn render_game_session(
             }
         }
 
-        // Shuffled tiles
         let word_chars = match &q.word {
             Some(w) => w.clone(),
             None => q.answer.clone(),
         };
-        // Let's deterministically show letters of the word
         let mut tiles_html = String::new();
         let letters: Vec<char> = word_chars.chars().collect();
         for (idx, &ch) in letters.iter().enumerate() {
@@ -451,7 +642,6 @@ pub fn render_game_session(
             tiles = tiles_html
         )
     } else {
-        // Multiple choices
         let mut choices_html = String::new();
         for (i, c) in q.choices.iter().enumerate() {
             let onclick = if session.locked {
@@ -482,6 +672,26 @@ pub fn render_game_session(
         ""
     };
 
+    let right_count = session.history.iter().filter(|i| i.is_correct).count();
+    let wrong_count = session.history.iter().filter(|i| !i.is_correct).count();
+    let mobile_toggle_label = if session.queue_open_mobile {
+        "▲ Hide Review Queue"
+    } else {
+        "▼ View Review Queue"
+    };
+    let mobile_open_cls = if session.queue_open_mobile {
+        " mobile-open"
+    } else {
+        ""
+    };
+
+    let queue_html = render_review_queue(
+        &session.history,
+        &session.queue_filter,
+        session.queue_open_mobile,
+        true,
+    );
+
     format!(
         r#"
 <div class="wrap game-shell">
@@ -501,31 +711,48 @@ pub fn render_game_session(
   {timer_bar}
   {level_up}
 
-  <div class="play-card">
-    <div class="visual{visual_small_cls}">{visual}</div>
-    <div class="qprompt">{prompt}</div>
-    <div class="qsub">{sub}</div>
+  <!-- Mobile learning queue summary toggle -->
+  <div class="mobile-queue-bar">
+    <button class="mobile-queue-toggle-btn" onclick="window.kidsToggleQueueMobile()">
+      <span>📋 Review Queue: <b>{right_count} ✅</b> &bull; <b>{wrong_count} ❌</b></span>
+      <span class="toggle-arrow">{mobile_toggle_label}</span>
+    </button>
+  </div>
 
-    <div class="listen-wrap">
-      <button type="button" class="btn btn-ghost listen-btn" onclick="window.kidsSpeakQuestion()" aria-label="Read question out loud">
-        🗣️ Read question to me
-      </button>
-    </div>
+  <!-- TWO-COLUMN MAIN LAYOUT: ARENA + SIDE REVIEW QUEUE -->
+  <div class="game-main-layout">
+    <div class="game-arena-col">
+      <div class="play-card">
+        <div class="visual{visual_small_cls}">{visual}</div>
+        <div class="qprompt">{prompt}</div>
+        <div class="qsub">{sub}</div>
 
-    <div class="tech-wrap">
-      <button class="tech-btn" onclick="window.kidsToggleTech()">{tech_btn_label}</button>
-      <div class="tech-panel {tech_panel_cls}">
-        {technique_content}
+        <div class="listen-wrap">
+          <button type="button" class="btn btn-ghost listen-btn" onclick="window.kidsSpeakQuestion()" aria-label="Read question out loud">
+            🗣️ Read question to me
+          </button>
+        </div>
+
+        <div class="tech-wrap">
+          <button class="tech-btn" onclick="window.kidsToggleTech()">{tech_btn_label}</button>
+          <div class="tech-panel {tech_panel_cls}">
+            {technique_content}
+          </div>
+        </div>
+
+        <div id="answerArea">
+          {answer_area}
+        </div>
+
+        <div class="feedback {feedback_class}">
+          {feedback_text}
+        </div>
       </div>
     </div>
 
-    <div id="answerArea">
-      {answer_area}
-    </div>
-
-    <div class="feedback {feedback_class}">
-      {feedback_text}
-    </div>
+    <aside class="game-sidebar-col{mobile_open_cls}">
+      {queue_html}
+    </aside>
   </div>
 </div>
 "#,
@@ -537,6 +764,9 @@ pub fn render_game_session(
         progress_pct = progress_pct,
         timer_bar = timer_bar_html,
         level_up = level_up_html,
+        right_count = right_count,
+        wrong_count = wrong_count,
+        mobile_toggle_label = mobile_toggle_label,
         visual_small_cls = visual_small_cls,
         visual = q.visual,
         prompt = q.prompt,
@@ -546,7 +776,9 @@ pub fn render_game_session(
         technique_content = technique_content,
         answer_area = answer_area_html,
         feedback_class = feedback_class,
-        feedback_text = feedback_text
+        feedback_text = feedback_text,
+        mobile_open_cls = mobile_open_cls,
+        queue_html = queue_html
     )
 }
 
@@ -557,12 +789,16 @@ pub fn render_result_view(
     title: &str,
     text: &str,
     tip: &str,
+    history: &[ReviewItem],
+    queue_filter: &str,
 ) -> String {
     let mut star_spans = String::new();
     for i in 0..3 {
         let cls = if i < stars { "" } else { "off" };
         star_spans.push_str(&format!(r#"<span class="{cls}">⭐</span>"#));
     }
+
+    let review_queue_html = render_review_queue(history, queue_filter, false, false);
 
     format!(
         r#"
@@ -602,8 +838,25 @@ pub fn render_result_view(
         🏠 Choose Another Game
       </button>
     </div>
+
+    <!-- Complete Round Review Queue -->
+    <div class="result-review-section">
+      <div class="result-review-heading">
+        <h3>📝 Complete Round Review</h3>
+        <p>Review everything that was done right and read through step-by-step tricks to master every concept!</p>
+      </div>
+      {review_queue_html}
+    </div>
   </div>
 </div>
-"#
+"#,
+        star_spans = star_spans,
+        title = title,
+        text = text,
+        score = score,
+        total = total,
+        stars = stars,
+        tip = tip,
+        review_queue_html = review_queue_html
     )
 }

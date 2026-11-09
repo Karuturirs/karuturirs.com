@@ -11,9 +11,13 @@ export function kids_next_question(): void;
 
 export function kids_quit_game(): void;
 
+export function kids_read_queue_item(idx: number): void;
+
 export function kids_replay_game(): void;
 
 export function kids_set_diff(diff: string): void;
+
+export function kids_set_queue_filter(filter: string): void;
 
 export function kids_set_round_len(len: number): void;
 
@@ -28,6 +32,8 @@ export function kids_start_game(game_id: string): void;
 export function kids_tap_spell_tile(tile_idx: number, ch_str: string): void;
 
 export function kids_tick_clock(): void;
+
+export function kids_toggle_queue_mobile(): void;
 
 export function kids_toggle_sound(): void;
 
@@ -48,8 +54,10 @@ export interface InitOutput {
     readonly kids_keep_going: () => void;
     readonly kids_next_question: () => void;
     readonly kids_quit_game: () => void;
+    readonly kids_read_queue_item: (a: number) => void;
     readonly kids_replay_game: () => void;
     readonly kids_set_diff: (a: number, b: number) => void;
+    readonly kids_set_queue_filter: (a: number, b: number) => void;
     readonly kids_set_round_len: (a: number) => void;
     readonly kids_set_style: (a: number, b: number) => void;
     readonly kids_show_home: () => void;
@@ -57,6 +65,7 @@ export interface InitOutput {
     readonly kids_start_game: (a: number, b: number) => void;
     readonly kids_tap_spell_tile: (a: number, b: number, c: number) => void;
     readonly kids_tick_clock: () => void;
+    readonly kids_toggle_queue_mobile: () => void;
     readonly kids_toggle_sound: () => void;
     readonly kids_toggle_tech: () => void;
     readonly kids_undo_spell: () => void;
