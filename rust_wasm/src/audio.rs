@@ -7,6 +7,9 @@ extern "C" {
 
     #[wasm_bindgen(js_name = speakWebSpeech)]
     fn js_speak_text(text: &str);
+
+    #[wasm_bindgen(js_name = stopWebSpeech)]
+    fn js_stop_speech();
 }
 
 pub struct AudioManager {
@@ -61,4 +64,8 @@ impl AudioManager {
 
 pub fn speak(text: &str) {
     js_speak_text(text);
+}
+
+pub fn stop_speech() {
+    js_stop_speech();
 }

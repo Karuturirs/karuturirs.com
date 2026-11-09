@@ -5,7 +5,7 @@ mod kids;
 mod storage;
 
 use app_state::{render_current_view, STATE};
-use audio::speak;
+use audio::{speak, stop_speech};
 use kids::data::GAMES_LIST;
 use kids::generators::generate_question;
 use kids::models::{Difficulty, GameSession, PlayStyle};
@@ -166,6 +166,7 @@ pub fn kids_start_game(game_id: &str) {
 
 #[wasm_bindgen]
 pub fn kids_answer_choice(_choice_idx: usize, val: &str) {
+    stop_speech();
     let (is_correct, should_finish) = STATE.with(|s| {
         let mut state = s.borrow_mut();
         state.handle_answer_choice(val)
@@ -228,7 +229,10 @@ pub fn kids_speak_question() {
     STATE.with(|s| {
         let state = s.borrow();
         if let Some(sess) = &state.session {
-            let mut text = sess.current.speak.clone();
+            let mut text = sess.current.speak.trim().to_string();
+            if text.is_empty() {
+                text = format!("{}. {}", sess.current.prompt, sess.current.sub);
+            }
             if sess.tech_open {
                 if let Some(t) = &sess.current.technique {
                     text.push_str(". Here is the trick: ");
@@ -279,6 +283,7 @@ pub fn kids_tick_clock() {
 
 #[wasm_bindgen]
 pub fn kids_next_question() {
+    stop_speech();
     let should_finish = STATE.with(|s| {
         let mut state = s.borrow_mut();
         let finish = state.handle_next_question();
@@ -298,6 +303,7 @@ pub fn kids_next_question() {
 
 #[wasm_bindgen]
 pub fn kids_finish_game() {
+    stop_speech();
     js_stop_kids_clock();
     STATE.with(|s| {
         let mut state = s.borrow_mut();
@@ -361,6 +367,7 @@ pub fn kids_keep_going() {
 
 #[wasm_bindgen]
 pub fn kids_quit_game() {
+    stop_speech();
     js_stop_kids_clock();
     STATE.with(|s| {
         let mut state = s.borrow_mut();
@@ -372,6 +379,7 @@ pub fn kids_quit_game() {
 
 #[wasm_bindgen]
 pub fn kids_show_home() {
+    stop_speech();
     js_stop_kids_clock();
     STATE.with(|s| {
         let mut state = s.borrow_mut();

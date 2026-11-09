@@ -27,7 +27,7 @@
     window.wasmApp = wasm;
 
     let audioCtx = null;
-    window.playWebAudioTone = function(freq, durMs, type) {
+    window.playWebAudioTone = function(freq, delaySec, durSec, waveType, gainVal) {
       try {
         if (!audioCtx) {
           const AudioContextClass = window.AudioContext || window.webkitAudioContext;
@@ -39,32 +39,167 @@
         if (audioCtx.state === 'suspended') {
           audioCtx.resume();
         }
+        const delay = (typeof delaySec === 'number' && !isNaN(delaySec)) ? Math.max(0, delaySec) : 0;
+        const dur = (typeof durSec === 'number' && !isNaN(durSec) && durSec > 0) ? durSec : 0.14;
+        const startTime = audioCtx.currentTime + delay;
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
-        osc.type = type || 'sine';
-        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-        gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
-        const durSec = (durMs || 150) / 1000;
-        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + durSec);
+        const validTypes = ['sine', 'triangle', 'square', 'sawtooth'];
+        osc.type = (typeof waveType === 'string' && validTypes.includes(waveType)) ? waveType : 'sine';
+        osc.frequency.setValueAtTime(freq || 440, startTime);
+        const volume = (typeof gainVal === 'number' && !isNaN(gainVal) && gainVal > 0) ? gainVal : 0.2;
+        gain.gain.setValueAtTime(volume, startTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, startTime + dur);
         osc.connect(gain);
         gain.connect(audioCtx.destination);
-        osc.start();
-        osc.stop(audioCtx.currentTime + durSec);
+        osc.start(startTime);
+        osc.stop(startTime + dur);
       } catch (err) {
         console.warn('WebAudio tone error:', err);
       }
     };
 
+    // Speech Synthesis Bridge
+    let speechTimer = null;
+    window._activeUtterance = null; // Retain reference against V8/WebKit GC bug
+
+    window.cleanSpeechText = function(text) {
+      if (!text) return '';
+      return text
+        .replace(/[−–]/g, ' minus ')
+        .replace(/[＋+]/g, ' plus ')
+        .replace(/[×*]/g, ' times ')
+        .replace(/[÷/]/g, ' divided by ')
+        .replace(/=/g, ' equals ')
+        .replace(/→/g, ' gives ')
+        .replace(/✓/g, ' correct ')
+        .replace(/⭐|🚀|🎈|🍊|🍌|🍎|🍓|🍇|🐶|🐱|🦁|🐘|🐸|🐮|🐷|🐑|🦆|🐴|🍕|🌮|🍩|🍪|🍭|✏️|✂️|💨|🧩|🎉|💪|👏|✌️|🔟|🔢|📚|🎨|💡|🔎|🏁|🏠|❤️/g, ' ')
+        .replace(/[^\p{L}\p{N}\p{P}\p{Z}]/gu, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    };
+
+    window.stopWebSpeech = function() {
+      if (speechTimer) {
+        clearTimeout(speechTimer);
+        speechTimer = null;
+      }
+      if ('speechSynthesis' in window) {
+        try {
+          window.speechSynthesis.cancel();
+        } catch (e) {}
+      }
+      window._activeUtterance = null;
+      const btn = document.querySelector('.listen-btn');
+      if (btn) {
+        btn.classList.remove('speaking');
+        btn.innerHTML = '🗣️ Read question to me';
+      }
+    };
+
     window.speakWebSpeech = function(text, rate, pitch) {
       try {
-        if (!window.speechSynthesis) return;
-        window.speechSynthesis.cancel();
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.rate = rate || 0.92;
-        utterance.pitch = pitch || 1.1;
-        window.speechSynthesis.speak(utterance);
+        if (!('speechSynthesis' in window)) {
+          console.warn('SpeechSynthesis is not supported in this browser.');
+          return;
+        }
+
+        const synth = window.speechSynthesis;
+
+        // If currently reading, pressing again stops cleanly
+        const btn = document.querySelector('.listen-btn');
+        if (synth.speaking && btn && btn.classList.contains('speaking')) {
+          window.stopWebSpeech();
+          return;
+        }
+
+        window.stopWebSpeech();
+
+        const cleanText = window.cleanSpeechText(text);
+        if (!cleanText) return;
+
+        if (btn) {
+          btn.classList.add('speaking');
+          btn.innerHTML = '🔊 Reading question...';
+        }
+
+        // Brief delay prevents Chromium/WebKit race condition where immediate .cancel() cancels next .speak()
+        speechTimer = setTimeout(() => {
+          try {
+            if (synth.paused) {
+              synth.resume();
+            }
+
+            const utterance = new SpeechSynthesisUtterance(cleanText);
+            window._activeUtterance = utterance; // Prevent garbage-collection
+            utterance.lang = 'en-US';
+            utterance.rate = rate || 0.90;
+            utterance.pitch = pitch || 1.12;
+
+            const voices = synth.getVoices();
+            if (voices && voices.length > 0) {
+              const engVoice = voices.find(v =>
+                v.lang === 'en-US' && (v.name.includes('Samantha') || v.name.includes('Google') || v.name.includes('Natural'))
+              ) || voices.find(v => v.lang === 'en-US' || v.lang.startsWith('en')) || voices[0];
+              if (engVoice) {
+                utterance.voice = engVoice;
+              }
+            }
+
+            utterance.onstart = () => {
+              const b = document.querySelector('.listen-btn');
+              if (b) {
+                b.classList.add('speaking');
+                b.innerHTML = '🔊 Reading question...';
+              }
+            };
+
+            const finishSpeaking = () => {
+              window._activeUtterance = null;
+              const b = document.querySelector('.listen-btn');
+              if (b) {
+                b.classList.remove('speaking');
+                b.innerHTML = '🗣️ Read question to me';
+              }
+            };
+
+            utterance.onend = finishSpeaking;
+            utterance.onerror = (e) => {
+              console.warn('Speech error:', e);
+              finishSpeaking();
+            };
+
+            synth.speak(utterance);
+          } catch (err) {
+            console.warn('SpeechSynthesis speak error:', err);
+            window.stopWebSpeech();
+          }
+        }, 60);
       } catch (err) {
         console.warn('WebSpeech error:', err);
+        window.stopWebSpeech();
+      }
+    };
+
+    // Preload speech synthesis voices
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.getVoices();
+      if (window.speechSynthesis.onvoiceschanged !== undefined) {
+        window.speechSynthesis.onvoiceschanged = () => {
+          window.speechSynthesis.getVoices();
+        };
+      }
+    }
+
+    // Default immediate fallback for kidsSpeakQuestion
+    window.kidsSpeakQuestion = window.speakQuestion = function() {
+      if (window.wasmApp && window.wasmApp.kids_speak_question) {
+        window.wasmApp.kids_speak_question();
+      } else {
+        const prompt = document.querySelector('.qprompt');
+        const sub = document.querySelector('.qsub');
+        const text = (prompt ? prompt.textContent : '') + '. ' + (sub ? sub.textContent : '');
+        window.speakWebSpeech(text);
       }
     };
 

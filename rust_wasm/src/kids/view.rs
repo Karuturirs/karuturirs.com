@@ -507,7 +507,7 @@ pub fn render_game_session(
     <div class="qsub">{sub}</div>
 
     <div class="listen-wrap">
-      <button class="btn btn-ghost listen-btn" onclick="window.kidsSpeakQuestion()">
+      <button type="button" class="btn btn-ghost listen-btn" onclick="window.kidsSpeakQuestion()" aria-label="Read question out loud">
         🗣️ Read question to me
       </button>
     </div>

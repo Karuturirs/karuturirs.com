@@ -228,6 +228,9 @@ function __wbg_get_imports() {
         __wbg_stopKidsClock_40a0ad439be02588: function() {
             stopKidsClock();
         },
+        __wbg_stopWebSpeech_f2909a1ef581c245: function() {
+            stopWebSpeech();
+        },
         __wbg_triggerConfetti_267543050c78deca: function(arg0) {
             triggerConfetti(arg0 >>> 0);
         },
