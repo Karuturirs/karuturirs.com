@@ -1,0 +1,28 @@
+/* tslint:disable */
+/* eslint-disable */
+export const memory: WebAssembly.Memory;
+export const kids_answer_choice: (a: number, b: number, c: number) => void;
+export const kids_finish_game: () => void;
+export const kids_keep_going: () => void;
+export const kids_next_question: () => void;
+export const kids_quit_game: () => void;
+export const kids_replay_game: () => void;
+export const kids_set_diff: (a: number, b: number) => void;
+export const kids_set_round_len: (a: number) => void;
+export const kids_set_style: (a: number, b: number) => void;
+export const kids_show_home: () => void;
+export const kids_speak_question: () => void;
+export const kids_start_game: (a: number, b: number) => void;
+export const kids_tap_spell_tile: (a: number, b: number, c: number) => void;
+export const kids_tick_clock: () => void;
+export const kids_toggle_sound: () => void;
+export const kids_toggle_tech: () => void;
+export const kids_undo_spell: () => void;
+export const navigate_to: (a: number, b: number) => void;
+export const start: () => void;
+export const __wbindgen_exn_store: (a: number) => void;
+export const __externref_table_alloc: () => number;
+export const __wbindgen_externrefs: WebAssembly.Table;
+export const __wbindgen_malloc: (a: number, b: number) => number;
+export const __wbindgen_realloc: (a: number, b: number, c: number, d: number) => number;
+export const __wbindgen_start: () => void;

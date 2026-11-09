@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ravi Sankar Karuturi | Rust WASM Portfolio & Kids School Learning</title>
+  <meta name="description" content="Personal engineering portfolio of Ravi Sankar Karuturi and interactive Rust WebAssembly Kids School Learning Games.">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div id="confetti-container"></div>
+  <div id="app">
+    <!-- Initial Loading State -->
+    <div style="min-height: 100vh; display: flex; align-items: center; justify-content: center; background: #0b0f19; color: #f9fafb; font-family: 'Nunito', sans-serif; text-align: center; padding: 2rem;">
+      <div>
+        <div style="font-size: 3rem; margin-bottom: 1rem; animation: pulse 1.5s ease-in-out infinite;">🦀 ⚡ ✨</div>
+        <h2 style="font-size: 1.75rem; font-weight: 700; margin-bottom: 0.5rem; font-family: 'Fredoka', sans-serif;">Loading Rust WebAssembly App...</h2>
+        <p style="color: #9ca3af; font-size: 1rem;">Preparing high-speed WebAssembly runtime & learning arena</p>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import init, * as wasm from '/pkg/karuturirs_wasm.js';
+
+    // Expose wasm methods globally for direct inline onclick events
+    window.wasmApp = wasm;
+
+    // Web Audio Synthesizer Bridge
+    let audioCtx = null;
+    window.playWebAudioTone = function(freq, durMs, type) {
+      try {
+        if (!audioCtx) {
+          const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+          if (AudioContextClass) {
+            audioCtx = new AudioContextClass();
+          }
+        }
+        if (!audioCtx) return;
+        if (audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type || 'sine';
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+        const durSec = (durMs || 150) / 1000;
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + durSec);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + durSec);
+      } catch (err) {
+        console.warn('WebAudio tone error:', err);
+      }
+    };
+
+    // Web Speech API Bridge
+    window.speakWebSpeech = function(text, rate, pitch) {
+      try {
+        if (!window.speechSynthesis) return;
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.rate = rate || 0.92;
+        utterance.pitch = pitch || 1.1;
+        window.speechSynthesis.speak(utterance);
+      } catch (err) {
+        console.warn('WebSpeech error:', err);
+      }
+    };
+
+    // Confetti Fireworks Generator
+    window.triggerConfetti = function(count = 25) {
+      const container = document.getElementById('confetti-container');
+      if (!container) return;
+      const colors = ['#f43f5e', '#ec4899', '#8b5cf6', '#3b82f6', '#10b981', '#f59e0b'];
+      for (let i = 0; i < count; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'confetti-particle';
+        particle.style.left = Math.random() * 100 + 'vw';
+        particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+        particle.style.animationDelay = (Math.random() * 0.4) + 's';
+        particle.style.animationDuration = (2.2 + Math.random() * 1.2) + 's';
+        particle.style.transform = `scale(${0.6 + Math.random() * 0.8})`;
+        container.appendChild(particle);
+        setTimeout(() => particle.remove(), 3500);
+      }
+    };
+
+    // Schedule Question Transitions
+    let nextTimeout = null;
+    window.scheduleNextQuestion = function(delayMs) {
+      if (nextTimeout) clearTimeout(nextTimeout);
+      nextTimeout = setTimeout(() => {
+        if (window.wasmApp && window.wasmApp.kids_next_question) {
+          window.wasmApp.kids_next_question();
+        }
+      }, delayMs || 1400);
+    };
+
+    let finishTimeout = null;
+    window.scheduleFinishGame = function(delayMs) {
+      if (finishTimeout) clearTimeout(finishTimeout);
+      finishTimeout = setTimeout(() => {
+        if (window.wasmApp && window.wasmApp.kids_finish_game) {
+          window.wasmApp.kids_finish_game();
+        }
+      }, delayMs || 2000);
+    };
+
+    // Timed Clock Controller
+    let clockInterval = null;
+    window.startKidsClock = function(seconds) {
+      if (clockInterval) clearInterval(clockInterval);
+      clockInterval = setInterval(() => {
+        if (window.wasmApp && window.wasmApp.kids_tick_clock) {
+          window.wasmApp.kids_tick_clock();
+        }
+      }, 1000);
+    };
+
+    window.stopKidsClock = function() {
+      if (clockInterval) {
+        clearInterval(clockInterval);
+        clockInterval = null;
+      }
+    };
+
+    // Client-side Navigation Bridge
+    window.addEventListener('popstate', () => {
+      if (window.wasmApp && window.wasmApp.navigate_to) {
+        window.wasmApp.navigate_to(window.location.pathname);
+      }
+    });
+
+    // Initialize Wasm Module
+    async function run() {
+      try {
+        await init();
+        console.log('Rust WebAssembly loaded successfully!');
+      } catch (e) {
+        console.error('Failed to initialize Wasm app:', e);
+        document.getElementById('app').innerHTML = `
+          <div style="padding: 2rem; text-align: center; color: #ef4444;">
+            <h3>Error loading WebAssembly</h3>
+            <p>${e.message || e}</p>
+          </div>
+        `;
+      }
+    }
+
+    run();
+  </script>
+</body>
+</html>

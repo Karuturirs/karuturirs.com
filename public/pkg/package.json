@@ -1,0 +1,15 @@
+{
+  "name": "karuturirs_wasm",
+  "type": "module",
+  "version": "0.1.0",
+  "files": [
+    "karuturirs_wasm_bg.wasm",
+    "karuturirs_wasm.js",
+    "karuturirs_wasm.d.ts"
+  ],
+  "main": "karuturirs_wasm.js",
+  "types": "karuturirs_wasm.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ]
+}

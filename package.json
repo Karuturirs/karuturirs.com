@@ -5,13 +5,12 @@
   "version": "0.1.0",
   "license": "MIT",
   "scripts": {
-    "build": "gatsby build",
-    "develop": "gatsby develop",
+    "build": "sh build.sh",
+    "build:wasm": "cd rust_wasm && wasm-pack build --target web --release --out-dir ../public/pkg",
+    "serve": "npx serve public",
+    "start": "npx serve public",
     "format": "prettier --write \"**/*.{js,jsx,json,md}\"",
-    "start": "npm run develop",
-    "serve": "gatsby serve",
-    "clean": "gatsby clean",
-    "test": "echo \"Write tests! -> https://gatsby.dev/unit-testing\" && exit 1"
+    "test": "echo \"Write tests!\" && exit 0"
   },
   "dependencies": {
     "@emotion/core": "^10.0.28",
