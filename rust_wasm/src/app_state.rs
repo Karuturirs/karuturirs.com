@@ -547,6 +547,15 @@ pub fn render_current_view() {
 
         if let Some(win) = web_sys::window() {
             if let Some(doc) = win.document() {
+                if let Some(body) = doc.body() {
+                    if state.current_path.starts_with("/kids-school-learning") {
+                        let _ = body.class_list().add_1("kids-page-body");
+                        let _ = body.class_list().remove_1("portfolio-page-body");
+                    } else {
+                        let _ = body.class_list().add_1("portfolio-page-body");
+                        let _ = body.class_list().remove_1("kids-page-body");
+                    }
+                }
                 if let Some(app_el) = doc.get_element_by_id("app") {
                     app_el.set_inner_html(&html);
                 }

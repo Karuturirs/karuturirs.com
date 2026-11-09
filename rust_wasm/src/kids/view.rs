@@ -75,22 +75,23 @@ pub fn render_kids_home(
 
     format!(
         r#"
-<div class="wrap kids-container">
-  <!-- TOP STATS & NAV -->
-  <header class="kids-top-nav">
-    <a href="/" class="nav-back-btn" onclick="event.preventDefault(); window.navigateTo('/');">
-      &larr; Back to karuturirs.com
-    </a>
-    <div class="top-stats-row">
-      <span class="stat-pill"><span class="pill-icon">⭐</span> <b id="statStars">{stars}</b> stars</span>
-      <span class="stat-pill"><span class="pill-icon">🎯</span> <b id="statRight">{right}</b> correct</span>
-      <span class="stat-pill"><span class="pill-icon">🔥</span> <b id="statStreak">{best_streak}</b> best streak</span>
-      <span class="stat-pill"><span class="pill-icon">🏆</span> <b id="statGames">{games_done}</b> games</span>
-      <button class="sound-toggle-btn" onclick="window.kidsToggleSound()" id="soundBtn">
-        {sound_icon} Sound: {sound_state}
-      </button>
-    </div>
-  </header>
+<div class="kids-page-wrapper">
+  <div class="wrap kids-container">
+    <!-- TOP STATS & NAV -->
+    <header class="kids-top-nav">
+      <a href="/" class="nav-back-btn" onclick="event.preventDefault(); window.navigateTo('/');">
+        &larr; Back to karuturirs.com
+      </a>
+      <div class="top-stats-row">
+        <span class="stat-pill"><span class="pill-icon">⭐</span> <b id="statStars">{stars}</b> stars</span>
+        <span class="stat-pill"><span class="pill-icon">🎯</span> <b id="statRight">{right}</b> correct</span>
+        <span class="stat-pill"><span class="pill-icon">🔥</span> <b id="statStreak">{best_streak}</b> best streak</span>
+        <span class="stat-pill"><span class="pill-icon">🏆</span> <b id="statGames">{games_done}</b> games</span>
+        <button class="sound-toggle-btn" onclick="window.kidsToggleSound()" id="soundBtn">
+          {sound_icon} Sound: {sound_state}
+        </button>
+      </div>
+    </header>
 
   <!-- HERO BANNER -->
   <section class="kids-hero">
@@ -290,8 +291,9 @@ pub fn render_kids_home(
   </section>
 
   <footer>
-    <p>&copy; karuturirs.com &middot; Educational Games for Kids &middot; Deployed on Netlify</p>
+    <p>&copy; karuturirs.com &middot; Educational Games for Kids</p>
   </footer>
+</div>
 </div>
 "#,
         sound_icon = if sound { "🔊" } else { "🔇" },
@@ -672,56 +674,35 @@ pub fn render_game_session(
         ""
     };
 
-    let right_count = session.history.iter().filter(|i| i.is_correct).count();
-    let wrong_count = session.history.iter().filter(|i| !i.is_correct).count();
-    let mobile_toggle_label = if session.queue_open_mobile {
-        "▲ Hide Review Queue"
-    } else {
-        "▼ View Review Queue"
-    };
-    let mobile_open_cls = if session.queue_open_mobile {
-        " mobile-open"
-    } else {
-        ""
-    };
-
     let queue_html = render_review_queue(
         &session.history,
         &session.queue_filter,
-        session.queue_open_mobile,
+        false,
         true,
     );
 
     format!(
         r#"
-<div class="wrap game-shell">
-  <div class="game-top">
-    <button class="btn btn-ghost back-btn" onclick="window.kidsQuitGame()">🏠 Quit</button>
-    <h2>{title}</h2>
-    <span class="qcount">{total_str}</span>
-    <span class="qcount">Score: {score}</span>
-    {hearts}
-    {finish_early}
-  </div>
+<div class="kids-page-wrapper">
+  <div class="wrap game-shell">
+    <div class="game-top">
+      <button class="btn btn-ghost back-btn" onclick="window.kidsQuitGame()">🏠 Quit</button>
+      <h2>{title}</h2>
+      <span class="qcount">{total_str}</span>
+      <span class="qcount">Score: {score}</span>
+      {hearts}
+      {finish_early}
+    </div>
 
-  <div class="progress">
-    <i style="width:{progress_pct}%;"></i>
-  </div>
+    <div class="progress">
+      <i style="width:{progress_pct}%;"></i>
+    </div>
 
-  {timer_bar}
-  {level_up}
+    {timer_bar}
+    {level_up}
 
-  <!-- Mobile learning queue summary toggle -->
-  <div class="mobile-queue-bar">
-    <button class="mobile-queue-toggle-btn" onclick="window.kidsToggleQueueMobile()">
-      <span>📋 Review Queue: <b>{right_count} ✅</b> &bull; <b>{wrong_count} ❌</b></span>
-      <span class="toggle-arrow">{mobile_toggle_label}</span>
-    </button>
-  </div>
-
-  <!-- TWO-COLUMN MAIN LAYOUT: ARENA + SIDE REVIEW QUEUE -->
-  <div class="game-main-layout">
-    <div class="game-arena-col">
+    <!-- ARENA: FOCUSED QUESTION CARD (CENTERED & DISTRACTION-FREE) -->
+    <div class="game-arena-center">
       <div class="play-card">
         <div class="visual{visual_small_cls}">{visual}</div>
         <div class="qprompt">{prompt}</div>
@@ -750,9 +731,10 @@ pub fn render_game_session(
       </div>
     </div>
 
-    <aside class="game-sidebar-col{mobile_open_cls}">
+    <!-- LIVE LEARNING QUEUE (BELOW QUESTIONS SO IT WON'T DISTRACT KIDS) -->
+    <section class="game-queue-below" aria-label="Live Learning Queue">
       {queue_html}
-    </aside>
+    </section>
   </div>
 </div>
 "#,
@@ -764,9 +746,6 @@ pub fn render_game_session(
         progress_pct = progress_pct,
         timer_bar = timer_bar_html,
         level_up = level_up_html,
-        right_count = right_count,
-        wrong_count = wrong_count,
-        mobile_toggle_label = mobile_toggle_label,
         visual_small_cls = visual_small_cls,
         visual = q.visual,
         prompt = q.prompt,
@@ -777,7 +756,6 @@ pub fn render_game_session(
         answer_area = answer_area_html,
         feedback_class = feedback_class,
         feedback_text = feedback_text,
-        mobile_open_cls = mobile_open_cls,
         queue_html = queue_html
     )
 }
@@ -802,50 +780,52 @@ pub fn render_result_view(
 
     format!(
         r#"
-<div class="wrap game-shell">
-  <div class="result-card">
-    <div class="result-stars">
-      {star_spans}
-    </div>
-    <h2 class="result-title">{title}</h2>
-    <p class="result-text">{text}</p>
-
-    <div class="result-box">
-      <div class="res-stat">
-        <span class="num">{score}</span>
-        <span class="lbl">Correct</span>
+<div class="kids-page-wrapper">
+  <div class="wrap game-shell">
+    <div class="result-card">
+      <div class="result-stars">
+        {star_spans}
       </div>
-      <div class="res-stat">
-        <span class="num">{total}</span>
-        <span class="lbl">Questions</span>
-      </div>
-      <div class="res-stat">
-        <span class="num">+{stars}</span>
-        <span class="lbl">Stars Earned</span>
-      </div>
-    </div>
+      <h2 class="result-title">{title}</h2>
+      <p class="result-text">{text}</p>
 
-    <p class="result-tip">{tip}</p>
-
-    <div class="result-actions">
-      <button class="btn btn-coral" onclick="window.kidsKeepGoing()">
-        🚀 Keep going — 10 more!
-      </button>
-      <button class="btn btn-teal" onclick="window.kidsReplayGame()">
-        🔄 Play Again
-      </button>
-      <button class="btn btn-ghost" onclick="window.kidsShowHome()">
-        🏠 Choose Another Game
-      </button>
-    </div>
-
-    <!-- Complete Round Review Queue -->
-    <div class="result-review-section">
-      <div class="result-review-heading">
-        <h3>📝 Complete Round Review</h3>
-        <p>Review everything that was done right and read through step-by-step tricks to master every concept!</p>
+      <div class="result-box">
+        <div class="res-stat">
+          <span class="num">{score}</span>
+          <span class="lbl">Correct</span>
+        </div>
+        <div class="res-stat">
+          <span class="num">{total}</span>
+          <span class="lbl">Questions</span>
+        </div>
+        <div class="res-stat">
+          <span class="num">+{stars}</span>
+          <span class="lbl">Stars Earned</span>
+        </div>
       </div>
-      {review_queue_html}
+
+      <p class="result-tip">{tip}</p>
+
+      <div class="result-actions">
+        <button class="btn btn-coral" onclick="window.kidsKeepGoing()">
+          🚀 Keep going — 10 more!
+        </button>
+        <button class="btn btn-teal" onclick="window.kidsReplayGame()">
+          🔄 Play Again
+        </button>
+        <button class="btn btn-ghost" onclick="window.kidsShowHome()">
+          🏠 Choose Another Game
+        </button>
+      </div>
+
+      <!-- Complete Round Review Queue -->
+      <div class="result-review-section">
+        <div class="result-review-heading">
+          <h3>📝 Complete Round Review</h3>
+          <p>Review everything that was done right and read through step-by-step tricks to master every concept!</p>
+        </div>
+        {review_queue_html}
+      </div>
     </div>
   </div>
 </div>

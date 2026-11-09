@@ -143,6 +143,10 @@ function __wbg_get_imports() {
         __wbg_add_9ceab44da1353b80: function() { return handleError(function (arg0, arg1, arg2) {
             arg0.add(getStringFromWasm0(arg1, arg2));
         }, arguments); },
+        __wbg_body_e549239eaff082e1: function(arg0) {
+            const ret = arg0.body;
+            return isLikeNone(ret) ? 0 : addToExternrefTable0(ret);
+        },
         __wbg_classList_8a097a4837412bf6: function(arg0) {
             const ret = arg0.classList;
             return ret;
@@ -205,6 +209,9 @@ function __wbg_get_imports() {
             const ret = Math.random();
             return ret;
         },
+        __wbg_remove_1013622eead8b586: function() { return handleError(function (arg0, arg1, arg2) {
+            arg0.remove(getStringFromWasm0(arg1, arg2));
+        }, arguments); },
         __wbg_scheduleFinishGame_8083900b0b756c1f: function(arg0) {
             scheduleFinishGame(arg0);
         },

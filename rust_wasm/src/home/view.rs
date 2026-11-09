@@ -9,6 +9,7 @@ pub fn render_home_html() -> String {
         <span class="brand-name">Ravi Sankar Karuturi</span>
       </a>
       <nav class="nav-links">
+        <a href="#initiatives" class="nav-item">Initiatives</a>
         <a href="#projects" class="nav-item">Projects</a>
         <a href="#certifications" class="nav-item">Certifications</a>
         <a href="#articles" class="nav-item">Articles</a>
@@ -25,32 +26,34 @@ pub fn render_home_html() -> String {
     <div class="hero-content">
       <div class="hero-status-pill">
         <span class="status-dot"></span>
-        <span>Lead Software Engineer &bull; Cloud &amp; Distributed Systems</span>
+        <span>Lead Software Engineer &bull; E-Commerce AI Search, AdTech &amp; Distributed Systems</span>
       </div>
       <h1 class="hero-title">
-        Building Resilient Systems &amp; <span class="highlight-text">Joyful Software</span>
+        Architecting Enterprise AI Search &amp; <span class="highlight-text">High-Scale Systems</span>
       </h1>
       <p class="hero-subtitle">
-        Hi, I'm <strong>Ravi Sankar Karuturi</strong>. Specializing in high-throughput enterprise architectures, event-driven distributed platforms, and delightfully fast interactive web applications.
+        Hi, I'm <strong>Ravi Sankar Karuturi</strong>. 15+ years of engineering leadership across Ecommerce AI Search, Agentic Workflows, AdTech &amp; Site Monetization, Cloud Security, and Distributed Systems. Driving core platform innovations at Macy's, Gymboree, and Sony International.
       </p>
       <div class="hero-cta">
-        <a href="/kids-school-learning" class="btn-primary" onclick="event.preventDefault(); window.navigateTo('/kids-school-learning');">
-          <span>🎮 Launch Kids School Learning</span>
+        <a href="#initiatives" class="btn-primary">
+          <span>💼 Enterprise Initiatives</span>
           <span class="btn-arrow">&rarr;</span>
         </a>
-        <a href="#projects" class="btn-secondary">
-          <span>🚀 View Projects</span>
+        <a href="/kids-school-learning" class="btn-secondary" onclick="event.preventDefault(); window.navigateTo('/kids-school-learning');">
+          <span>🎮 Kids Learning App</span>
         </a>
         <a href="#contact" class="btn-secondary">
           <span>📫 Get in Touch</span>
         </a>
       </div>
       <div class="hero-badges">
-        <span class="hero-badge">☁️ Distributed Systems</span>
-        <span class="hero-badge">☕ Java / Spring Boot</span>
-        <span class="hero-badge">🗄️ Apache Cassandra</span>
-        <span class="hero-badge">🦀 Rust &amp; Wasm</span>
-        <span class="hero-badge">🎓 EduTech</span>
+        <span class="hero-badge">🤖 Agentic AI &amp; "Ask Macy's"</span>
+        <span class="hero-badge">🖼️ ColPali Image-RAG</span>
+        <span class="hero-badge">⚡ Vector Search &amp; Embeddings</span>
+        <span class="hero-badge">☕ Java / Spark / Cassandra</span>
+        <span class="hero-badge">🦀 Rust &amp; Microservices</span>
+        <span class="hero-badge">💰 Realtime Ads &amp; Monetization</span>
+        <span class="hero-badge">🛡️ CyberArk &amp; Fraud Defense</span>
       </div>
     </div>
 
@@ -62,41 +65,169 @@ pub fn render_home_html() -> String {
           <span class="wdot wdot-yellow"></span>
           <span class="wdot wdot-green"></span>
         </div>
-        <span class="hero-card-badge">System Profile</span>
+        <span class="hero-card-badge">Lead Architect Profile</span>
       </div>
       <div class="hero-stat-box">
         <div class="hero-profile-row">
           <div class="hero-profile-avatar">RK</div>
           <div>
             <h3 class="hero-profile-name">Ravi Sankar Karuturi</h3>
-            <p class="hero-profile-title">Lead Software Engineer &amp; Architect</p>
+            <p class="hero-profile-title">Lead Software Engineer &amp; System Architect</p>
           </div>
         </div>
         <div class="hero-metrics-grid">
           <div class="metric-item">
-            <span class="metric-val">10+</span>
+            <span class="metric-val">15+</span>
             <span class="metric-label">Years Exp</span>
           </div>
           <div class="metric-item">
-            <span class="metric-val">Enterprise</span>
-            <span class="metric-label">Scale &amp; Reliability</span>
+            <span class="metric-val">18h &rarr; 12m</span>
+            <span class="metric-label">Spark Batch 90x Speedup</span>
           </div>
           <div class="metric-item">
-            <span class="metric-val">14+</span>
-            <span class="metric-label">Edu Games Built</span>
+            <span class="metric-val">O(n log n)</span>
+            <span class="metric-label">Algorithm Optimization</span>
           </div>
         </div>
       </div>
       <div class="hero-skills-wrapper">
-        <span class="skills-label">Core Capabilities &amp; Stack</span>
+        <span class="skills-label">Core Domains &amp; Technologies</span>
         <div class="hero-skills-row">
-          <span class="skill-pill">Java / Spring Boot</span>
-          <span class="skill-pill">Distributed Architecture</span>
-          <span class="skill-pill">Apache Cassandra</span>
-          <span class="skill-pill">Docker &amp; K8s</span>
-          <span class="skill-pill">Machine Learning</span>
-          <span class="skill-pill">Kafka &amp; Event-Driven</span>
-          <span class="skill-pill">WebAssembly</span>
+          <span class="skill-pill">AI Search &amp; Agentic AI</span>
+          <span class="skill-pill">ColPali Multimodal RAG</span>
+          <span class="skill-pill">AdTech &amp; Realtime Ads</span>
+          <span class="skill-pill">Java / Spark / Cassandra</span>
+          <span class="skill-pill">Rust Microservices</span>
+          <span class="skill-pill">Checkout Fraud Rekey</span>
+          <span class="skill-pill">Unsupervised ML Clustering</span>
+          <span class="skill-pill">CyberArk Privileged Access</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- KEY INITIATIVES SECTION -->
+  <section class="section-wrapper" id="initiatives">
+    <div class="section-header">
+      <h2 class="section-title">🚀 Core Enterprise Initiatives &amp; Engineering Impact</h2>
+      <p class="section-subtitle">Proven technical architecture and high-scale systems delivered across Macy's, Gymboree, and Sony International</p>
+    </div>
+    <div class="initiatives-grid">
+      <!-- Initiative 1: AI Search & Agentic Systems -->
+      <div class="initiative-card">
+        <div class="init-header">
+          <div class="init-icon-box">🤖</div>
+          <div class="init-title-wrap">
+            <span class="init-company-badge">Search Core &bull; Macys.com</span>
+            <h3 class="init-card-title">E-Commerce AI Search &amp; Agentic Systems</h3>
+          </div>
+        </div>
+        <div class="init-impact-callout">
+          <span class="init-impact-num">ColPali &amp; Agentic</span>
+          <span class="init-impact-text">Transforming retail discovery into intelligent conversational and multimodal agentic commerce.</span>
+        </div>
+        <ul class="init-bullets">
+          <li><strong>"Ask Macy's" Conversational Search:</strong> Designed and developed an AI-powered conversational search &amp; commerce experience supporting shoppers across their entire purchasing lifecycle—from product finding and conversational filtering to order tracking and post-purchase inquiries.</li>
+          <li><strong>Multimodal Image-RAG with ColPali:</strong> Built a state-of-the-art visual retrieval engine using the ColPali vision-language model, significantly outperforming traditional text-only RAG approaches on complex retail imagery.</li>
+          <li><strong>Semantic Search Enhancement:</strong> Deployed dense vector embeddings on Product Detail Pages (PDPs) to identify and suggest contextually relevant search terms, greatly elevating catalog discoverability.</li>
+          <li><strong>AI for Catalog Data Quality:</strong> Engineered automated AI data flow tools that continuously audit and validate product-to-category taxonomy mappings across the catalog.</li>
+          <li><strong>Trending Query Intelligence:</strong> Applied embedding models to discover and rank trending consumer search queries in real time against catalog inventory.</li>
+          <li><strong>Autonomous Root Cause Agents:</strong> Architected intelligent agents that automate root cause analysis and accelerate stakeholder support during incidents.</li>
+        </ul>
+        <div class="init-tags">
+          <span class="init-tag">Ask Macy's</span>
+          <span class="init-tag">ColPali Image-RAG</span>
+          <span class="init-tag">Agentic AI</span>
+          <span class="init-tag">Vector Embeddings</span>
+          <span class="init-tag">Semantic Search</span>
+          <span class="init-tag">Conversational Filtering</span>
+        </div>
+      </div>
+
+      <!-- Initiative 2: Distributed Systems & Performance -->
+      <div class="initiative-card">
+        <div class="init-header">
+          <div class="init-icon-box">⚡</div>
+          <div class="init-title-wrap">
+            <span class="init-company-badge">High-Scale Architecture &bull; Macys.com</span>
+            <h3 class="init-card-title">Distributed Systems &amp; Performance Engineering</h3>
+          </div>
+        </div>
+        <div class="init-impact-callout">
+          <span class="init-impact-num">18h &rarr; 12m</span>
+          <span class="init-impact-text">90x batch processing acceleration using Java, Apache Spark, and Apache Cassandra.</span>
+        </div>
+        <ul class="init-bullets">
+          <li><strong>Massive Batch Modernization:</strong> Re-engineered legacy multi-stage batch processing with an optimized Java, Apache Spark, and Apache Cassandra pipeline, reducing total runtime from 18 hours down to 12 minutes.</li>
+          <li><strong>Rust Microservices Health Check:</strong> Built an ultra-low-overhead health check observability tool in Rust to pinpoint faults across distributed microservice tiers.</li>
+          <li><strong>Algorithmic Complexity Reduction:</strong> Optimized codebase method similarity computation, reducing computational complexity from O(n&sup2;) quadratic time to O(n log n).</li>
+          <li><strong>Mobile App Dynamic Caching:</strong> Redesigned mobile app homepage content delivery using multi-layer caching, delivering dynamic personalization with high resilience under peak holiday traffic.</li>
+        </ul>
+        <div class="init-tags">
+          <span class="init-tag">Apache Spark</span>
+          <span class="init-tag">Apache Cassandra</span>
+          <span class="init-tag">Rust</span>
+          <span class="init-tag">Java</span>
+          <span class="init-tag">O(n log n)</span>
+          <span class="init-tag">Distributed Caching</span>
+          <span class="init-tag">Microservices</span>
+        </div>
+      </div>
+
+      <!-- Initiative 3: AdTech & Site Monetization -->
+      <div class="initiative-card">
+        <div class="init-header">
+          <div class="init-icon-box">💰</div>
+          <div class="init-title-wrap">
+            <span class="init-company-badge">Monetization &bull; Macys.com</span>
+            <h3 class="init-card-title">AdTech, Site Monetization &amp; Data Science</h3>
+          </div>
+        </div>
+        <div class="init-impact-callout">
+          <span class="init-impact-num">Realtime Ads</span>
+          <span class="init-impact-text">High-concurrency ad mediation, programmatic auction engines, and behavioral customer clustering.</span>
+        </div>
+        <ul class="init-bullets">
+          <li><strong>Realtime Ads in Email:</strong> Designed and developed an end-to-end programmatic ad rendering engine serving real-time dynamic targeted ads inside marketing emails at open time.</li>
+          <li><strong>Sponsored Products Mediation Engine:</strong> Built high-concurrency mediation engine balancing organic search relevance and sponsored product yield on Macys.com.</li>
+          <li><strong>Unsupervised Customer Clustering:</strong> Engineered customer clustering models using K-Means, DBSCAN, and Mean Shift algorithms to uncover distinct behavioral shopping personas.</li>
+        </ul>
+        <div class="init-tags">
+          <span class="init-tag">Realtime Ad Serving</span>
+          <span class="init-tag">Sponsored Products</span>
+          <span class="init-tag">Ad Mediation</span>
+          <span class="init-tag">K-Means / DBSCAN</span>
+          <span class="init-tag">Mean Shift</span>
+          <span class="init-tag">MarTech</span>
+        </div>
+      </div>
+
+      <!-- Initiative 4: Security, Fraud & Global Platforms -->
+      <div class="initiative-card">
+        <div class="init-header">
+          <div class="init-icon-box">🛡️</div>
+          <div class="init-title-wrap">
+            <span class="init-company-badge">Security &amp; Global &bull; Macy's, Gymboree, Sony</span>
+            <h3 class="init-card-title">Enterprise Security, Fraud Defense &amp; Global CMS</h3>
+          </div>
+        </div>
+        <div class="init-impact-callout">
+          <span class="init-impact-num">$Millions Saved</span>
+          <span class="init-impact-text">Holiday checkout fraud defense, enterprise CyberArk PAM, and global content architecture.</span>
+        </div>
+        <ul class="init-bullets">
+          <li><strong>Holiday Fraud Prevention:</strong> Implemented checkout page re-keying protocols that intercepted and stopped millions of dollars in fraudulent transactions during peak holiday volume.</li>
+          <li><strong>Password Hashing &amp; CyberArk:</strong> Hardened authentication layers with enterprise password hashing and integrated CyberArk for centralized server and database privileged access management.</li>
+          <li><strong>Gymboree Enterprise SEO:</strong> Engineered comprehensive SEO architecture across homepage, category, and PDP pages with high-performance servlet filters managing URL migrations.</li>
+          <li><strong>Sony International Multi-Lingual CMS:</strong> Scaled TeamSite enterprise CMS translation workflows, distributing localized content from English business authoring to country portals worldwide.</li>
+        </ul>
+        <div class="init-tags">
+          <span class="init-tag">Fraud Rekey</span>
+          <span class="init-tag">CyberArk PAM</span>
+          <span class="init-tag">Password Hashing</span>
+          <span class="init-tag">Enterprise SEO</span>
+          <span class="init-tag">Sony TeamSite CMS</span>
+          <span class="init-tag">Servlet Filters</span>
         </div>
       </div>
     </div>
@@ -169,7 +300,7 @@ pub fn render_home_html() -> String {
             <span class="project-tag">EduTech</span>
             <span class="project-tag">WebAudio</span>
             <span class="project-tag">Speech API</span>
-            <span class="project-tag">Netlify</span>
+            <span class="project-tag">WebAssembly</span>
           </div>
         </div>
         <div class="project-footer">
@@ -367,6 +498,7 @@ pub fn render_home_html() -> String {
         <p class="footer-role">Lead Software Engineer &bull; karuturirs.com</p>
       </div>
       <div class="footer-links">
+        <a href="#initiatives">Initiatives</a>
         <a href="#projects">Projects</a>
         <a href="#certifications">Certifications</a>
         <a href="#articles">Articles</a>
