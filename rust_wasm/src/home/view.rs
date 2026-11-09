@@ -26,7 +26,7 @@ pub fn render_home_html() -> String {
     <div class="hero-content">
       <div class="hero-status-pill">
         <span class="status-dot"></span>
-        <span>Lead Software Engineer &bull; E-Commerce AI Search, AdTech &amp; Distributed Systems</span>
+        <span>Staff Software Engineer &bull; E-Commerce AI Search, AdTech &amp; Distributed Systems</span>
       </div>
       <h1 class="hero-title">
         Architecting Enterprise AI Search &amp; <span class="highlight-text">High-Scale Systems</span>
@@ -65,14 +65,14 @@ pub fn render_home_html() -> String {
           <span class="wdot wdot-yellow"></span>
           <span class="wdot wdot-green"></span>
         </div>
-        <span class="hero-card-badge">Lead Architect Profile</span>
+        <span class="hero-card-badge">Staff Architect Profile</span>
       </div>
       <div class="hero-stat-box">
         <div class="hero-profile-row">
           <div class="hero-profile-avatar">RK</div>
           <div>
             <h3 class="hero-profile-name">Ravi Sankar Karuturi</h3>
-            <p class="hero-profile-title">Lead Software Engineer &amp; System Architect</p>
+            <p class="hero-profile-title">Staff Software Engineer &bull; Search Core</p>
           </div>
         </div>
         <div class="hero-metrics-grid">
@@ -495,7 +495,7 @@ pub fn render_home_html() -> String {
       <div class="footer-brand">
         <span class="brand-logo footer-logo">RK</span>
         <h4 class="footer-name">Ravi Sankar Karuturi</h4>
-        <p class="footer-role">Lead Software Engineer &bull; karuturirs.com</p>
+        <p class="footer-role">Staff Software Engineer &bull; Search Core &bull; karuturirs.com</p>
       </div>
       <div class="footer-links">
         <a href="#initiatives">Initiatives</a>
