@@ -139,6 +139,24 @@
     async function run() {
       try {
         await init();
+        // Bind all interactive handlers to window for both camelCase and snake_case
+        window.kidsStartGame = window.startGame = wasm.kids_start_game;
+        window.kidsSetDiff = window.setDiff = wasm.kids_set_diff;
+        window.kidsSetRoundLen = window.setLength = wasm.kids_set_round_len;
+        window.kidsSetStyle = window.setStyle = wasm.kids_set_style;
+        window.kidsToggleSound = window.toggleSound = wasm.kids_toggle_sound;
+        window.kidsAnswerChoice = window.answerChoice = wasm.kids_answer_choice;
+        window.kidsTapSpellTile = window.tapTile = wasm.kids_tap_spell_tile;
+        window.kidsUndoSpell = window.undoTile = wasm.kids_undo_spell;
+        window.kidsToggleTech = window.toggleTechnique = wasm.kids_toggle_tech;
+        window.kidsSpeakQuestion = window.speakQuestion = wasm.kids_speak_question;
+        window.kidsQuitGame = window.quitGame = wasm.kids_quit_game;
+        window.kidsFinishGame = window.finishGame = wasm.kids_finish_game;
+        window.kidsReplayGame = window.replayGame = wasm.kids_retry_game;
+        window.kidsKeepGoing = window.keepGoing = wasm.kids_keep_going;
+        window.kidsShowHome = window.showHome = wasm.kids_show_home;
+        window.navigateTo = wasm.navigate_to;
+
         console.log('Rust WebAssembly loaded successfully!');
       } catch (e) {
         console.error('Failed to initialize Wasm app:', e);
