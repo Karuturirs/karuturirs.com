@@ -56,7 +56,9 @@ typings/
 
 # gatsby files
 .cache/
-public
+
+# Rust WASM target
+rust_wasm/target/
 
 # Mac files
 .DS_Store

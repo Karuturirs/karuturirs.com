@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kids School Learning | Fun Maths &amp; English Games</title>
+  <meta name="description" content="Interactive Maths and English games for kids. Counting, Addition, Subtraction, Times Tables, Spelling, Missing Letters, Rhymes, and The Big Adventure!">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="alternate icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="kids-page-body">
+  <div id="confetti-container"></div>
+  <div id="app">
+    <!-- Initial Loading State -->
+    <div style="min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #eef2ff, #fae8ff, #fef3c7); color: #1e1b4b; font-family: 'Fredoka', sans-serif; text-align: center; padding: 2rem;">
+      <div>
+        <div style="font-size: 3.5rem; margin-bottom: 1rem; animation: floatMascot 2s ease-in-out infinite;">⭐ 🚀 🎈</div>
+        <h2 style="font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem;">Loading Kids School Learning Games...</h2>
+        <p style="color: #6366f1; font-size: 1.15rem; font-family: 'Nunito', sans-serif; font-weight: 600;">Starting your fun learning adventure...</p>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import init, * as wasm from '/pkg/karuturirs_wasm.js';
+
+    window.wasmApp = wasm;
+
+    let audioCtx = null;
+    window.playWebAudioTone = function(freq, delaySec, durSec, waveType, gainVal) {
+      try {
+        if (!audioCtx) {
+          const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+          if (AudioContextClass) {
+            audioCtx = new AudioContextClass();
+          }
+        }
+        if (!audioCtx) return;
+        if (audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+        const delay = (typeof delaySec === 'number' && !isNaN(delaySec)) ? Math.max(0, delaySec) : 0;
+        const dur = (typeof durSec === 'number' && !isNaN(durSec) && durSec > 0) ? durSec : 0.14;
+        const startTime = audioCtx.currentTime + delay;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        const validTypes = ['sine', 'triangle', 'square', 'sawtooth'];
+        osc.type = (typeof waveType === 'string' && validTypes.includes(waveType)) ? waveType : 'sine';
+        osc.frequency.setValueAtTime(freq || 440, startTime);
+        const volume = (typeof gainVal === 'number' && !isNaN(gainVal) && gainVal > 0) ? gainVal : 0.2;
+        gain.gain.setValueAtTime(volume, startTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, startTime + dur);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(startTime);
+        osc.stop(startTime + dur);
+      } catch (err) {
+        console.warn('WebAudio tone error:', err);
+      }
+    };
+
+    // Speech Synthesis Bridge
+    let speechTimer = null;
+    window._activeUtterance = null; // Retain reference against V8/WebKit GC bug
+
+    window.cleanSpeechText = function(text) {
+      if (!text) return '';
+      return text
+        .replace(/[−–]/g, ' minus ')
+        .replace(/[＋+]/g, ' plus ')
+        .replace(/[×*]/g, ' times ')
+        .replace(/[÷/]/g, ' divided by ')
+        .replace(/=/g, ' equals ')
+        .replace(/→/g, ' gives ')
+        .replace(/✓/g, ' correct ')
+        .replace(/⭐|🚀|🎈|🍊|🍌|🍎|🍓|🍇|🐶|🐱|🦁|🐘|🐸|🐮|🐷|🐑|🦆|🐴|🍕|🌮|🍩|🍪|🍭|✏️|✂️|💨|🧩|🎉|💪|👏|✌️|🔟|🔢|📚|🎨|💡|🔎|🏁|🏠|❤️/g, ' ')
+        .replace(/[^\p{L}\p{N}\p{P}\p{Z}]/gu, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    };
+
+    window.stopWebSpeech = function() {
+      if (speechTimer) {
+        clearTimeout(speechTimer);
+        speechTimer = null;
+      }
+      if ('speechSynthesis' in window) {
+        try {
+          window.speechSynthesis.cancel();
+        } catch (e) {}
+      }
+      window._activeUtterance = null;
+      const btn = document.querySelector('.listen-btn');
+      if (btn) {
+        btn.classList.remove('speaking');
+        btn.innerHTML = '🗣️ Read question to me';
+      }
+    };
+
+    window.speakWebSpeech = function(text, rate, pitch) {
+      try {
+        if (!('speechSynthesis' in window)) {
+          console.warn('SpeechSynthesis is not supported in this browser.');
+          return;
+        }
+
+        const synth = window.speechSynthesis;
+
+        // If currently reading, pressing again stops cleanly
+        const btn = document.querySelector('.listen-btn');
+        if (synth.speaking && btn && btn.classList.contains('speaking')) {
+          window.stopWebSpeech();
+          return;
+        }
+
+        window.stopWebSpeech();
+
+        const cleanText = window.cleanSpeechText(text);
+        if (!cleanText) return;
+
+        if (btn) {
+          btn.classList.add('speaking');
+          btn.innerHTML = '🔊 Reading question...';
+        }
+
+        // Brief delay prevents Chromium/WebKit race condition where immediate .cancel() cancels next .speak()
+        speechTimer = setTimeout(() => {
+          try {
+            if (synth.paused) {
+              synth.resume();
+            }
+
+            const utterance = new SpeechSynthesisUtterance(cleanText);
+            window._activeUtterance = utterance; // Prevent garbage-collection
+            utterance.lang = 'en-US';
+            utterance.rate = rate || 0.90;
+            utterance.pitch = pitch || 1.12;
+
+            const voices = synth.getVoices();
+            if (voices && voices.length > 0) {
+              const engVoice = voices.find(v =>
+                v.lang === 'en-US' && (v.name.includes('Samantha') || v.name.includes('Google') || v.name.includes('Natural'))
+              ) || voices.find(v => v.lang === 'en-US' || v.lang.startsWith('en')) || voices[0];
+              if (engVoice) {
+                utterance.voice = engVoice;
+              }
+            }
+
+            utterance.onstart = () => {
+              const b = document.querySelector('.listen-btn');
+              if (b) {
+                b.classList.add('speaking');
+                b.innerHTML = '🔊 Reading question...';
+              }
+            };
+
+            const finishSpeaking = () => {
+              window._activeUtterance = null;
+              const b = document.querySelector('.listen-btn');
+              if (b) {
+                b.classList.remove('speaking');
+                b.innerHTML = '🗣️ Read question to me';
+              }
+            };
+
+            utterance.onend = finishSpeaking;
+            utterance.onerror = (e) => {
+              console.warn('Speech error:', e);
+              finishSpeaking();
+            };
+
+            synth.speak(utterance);
+          } catch (err) {
+            console.warn('SpeechSynthesis speak error:', err);
+            window.stopWebSpeech();
+          }
+        }, 60);
+      } catch (err) {
+        console.warn('WebSpeech error:', err);
+        window.stopWebSpeech();
+      }
+    };
+
+    // Preload speech synthesis voices
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.getVoices();
+      if (window.speechSynthesis.onvoiceschanged !== undefined) {
+        window.speechSynthesis.onvoiceschanged = () => {
+          window.speechSynthesis.getVoices();
+        };
+      }
+    }
+
+    // Default immediate fallback for kidsSpeakQuestion
+    window.kidsSpeakQuestion = window.speakQuestion = function() {
+      if (window.wasmApp && window.wasmApp.kids_speak_question) {
+        window.wasmApp.kids_speak_question();
+      } else {
+        const prompt = document.querySelector('.qprompt');
+        const sub = document.querySelector('.qsub');
+        const text = (prompt ? prompt.textContent : '') + '. ' + (sub ? sub.textContent : '');
+        window.speakWebSpeech(text);
+      }
+    };
+
+    window.triggerConfetti = function(count = 25) {
+      const container = document.getElementById('confetti-container');
+      if (!container) return;
+      const colors = ['#f43f5e', '#ec4899', '#8b5cf6', '#3b82f6', '#10b981', '#f59e0b'];
+      for (let i = 0; i < count; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'confetti-particle';
+        particle.style.left = Math.random() * 100 + 'vw';
+        particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+        particle.style.animationDelay = (Math.random() * 0.4) + 's';
+        particle.style.animationDuration = (2.2 + Math.random() * 1.2) + 's';
+        particle.style.transform = `scale(${0.6 + Math.random() * 0.8})`;
+        container.appendChild(particle);
+        setTimeout(() => particle.remove(), 3500);
+      }
+    };
+
+    let nextTimeout = null;
+    window.scheduleNextQuestion = function(delayMs) {
+      if (nextTimeout) clearTimeout(nextTimeout);
+      nextTimeout = setTimeout(() => {
+        if (window.wasmApp && window.wasmApp.kids_next_question) {
+          window.wasmApp.kids_next_question();
+        }
+      }, delayMs || 1400);
+    };
+
+    let finishTimeout = null;
+    window.scheduleFinishGame = function(delayMs) {
+      if (finishTimeout) clearTimeout(finishTimeout);
+      finishTimeout = setTimeout(() => {
+        if (window.wasmApp && window.wasmApp.kids_finish_game) {
+          window.wasmApp.kids_finish_game();
+        }
+      }, delayMs || 2000);
+    };
+
+    let clockInterval = null;
+    window.startKidsClock = function(seconds) {
+      if (clockInterval) clearInterval(clockInterval);
+      clockInterval = setInterval(() => {
+        if (window.wasmApp && window.wasmApp.kids_tick_clock) {
+          window.wasmApp.kids_tick_clock();
+        }
+      }, 1000);
+    };
+
+    window.stopKidsClock = function() {
+      if (clockInterval) {
+        clearInterval(clockInterval);
+        clockInterval = null;
+      }
+    };
+
+    window.addEventListener('popstate', () => {
+      if (window.wasmApp && window.wasmApp.navigate_to) {
+        window.wasmApp.navigate_to(window.location.pathname);
+      }
+    });
+
+    async function run() {
+      try {
+        await init();
+        // Bind all interactive handlers to window for both camelCase and snake_case
+        window.kidsStartGame = window.startGame = wasm.kids_start_game;
+        window.kidsSetDiff = window.setDiff = wasm.kids_set_diff;
+        window.kidsSetRoundLen = window.setLength = wasm.kids_set_round_len;
+        window.kidsSetStyle = window.setStyle = wasm.kids_set_style;
+        window.kidsToggleSound = window.toggleSound = wasm.kids_toggle_sound;
+        window.kidsAnswerChoice = window.answerChoice = wasm.kids_answer_choice;
+        window.kidsTapSpellTile = window.tapTile = wasm.kids_tap_spell_tile;
+        window.kidsUndoSpell = window.undoTile = wasm.kids_undo_spell;
+        window.kidsToggleTech = window.toggleTechnique = wasm.kids_toggle_tech;
+        window.kidsSpeakQuestion = window.speakQuestion = wasm.kids_speak_question;
+        window.kidsQuitGame = window.quitGame = wasm.kids_quit_game;
+        window.kidsFinishGame = window.finishGame = wasm.kids_finish_game;
+        window.kidsReplayGame = window.replayGame = wasm.kids_replay_game;
+        window.kidsKeepGoing = window.keepGoing = wasm.kids_keep_going;
+        window.kidsShowHome = window.showHome = wasm.kids_show_home;
+        window.kidsSetQueueFilter = window.setQueueFilter = wasm.kids_set_queue_filter;
+        window.kidsToggleQueueMobile = window.toggleQueueMobile = wasm.kids_toggle_queue_mobile;
+        window.kidsReadQueueItem = window.readQueueItem = wasm.kids_read_queue_item;
+        window.navigateTo = wasm.navigate_to;
+
+        console.log('Rust WebAssembly Kids Learning App loaded successfully!');
+      } catch (e) {
+        console.error('Failed to initialize Wasm app:', e);
+        document.getElementById('app').innerHTML = `
+          <div style="padding: 2rem; text-align: center; color: #ef4444;">
+            <h3>Error loading WebAssembly</h3>
+            <p>${e.message || e}</p>
+          </div>
+        `;
+      }
+    }
+
+    run();
+  </script>
+</body>
+</html>
