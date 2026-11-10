@@ -2,6 +2,12 @@
   publish = "public"
   command = "sh build.sh"
 
+[build.environment]
+  NODE_VERSION = "22"
+
+[[plugins]]
+  package = "@netlify/plugin-lighthouse"
+
 [[redirects]]
   from = "/*"
   to = "/index.html"

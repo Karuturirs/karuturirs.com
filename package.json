@@ -16,5 +16,8 @@
   },
   "bugs": {
     "url": "https://github.com/Karuturirs/karuturirs.com/issues"
+  },
+  "devDependencies": {
+    "@netlify/plugin-lighthouse": "^6.0.4"
   }
 }
