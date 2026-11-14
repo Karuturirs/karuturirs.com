@@ -12,6 +12,16 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/style.css">
+
+  <!-- Google Tag Manager / Analytics -->
+  <script async src="https://www.googletagmanager.com/gtm.js?id=GTM-NP2H8LS7"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+  </script>
+  <script src="/js/analytics.js"></script>
+  <!-- End Google Tag Manager -->
 </head>
 <body class="kids-page-body">
   <div id="confetti-container"></div>
@@ -263,6 +273,12 @@
     };
 
     window.addEventListener('popstate', () => {
+      if (typeof window.gtag === 'function') {
+        window.gtag('event', 'page_view', { page_path: window.location.pathname });
+      }
+      if (window.dataLayer) {
+        window.dataLayer.push({ event: 'pageview', page: window.location.pathname });
+      }
       if (window.wasmApp && window.wasmApp.navigate_to) {
         window.wasmApp.navigate_to(window.location.pathname);
       }
@@ -290,7 +306,19 @@
         window.kidsSetQueueFilter = window.setQueueFilter = wasm.kids_set_queue_filter;
         window.kidsToggleQueueMobile = window.toggleQueueMobile = wasm.kids_toggle_queue_mobile;
         window.kidsReadQueueItem = window.readQueueItem = wasm.kids_read_queue_item;
-        window.navigateTo = wasm.navigate_to;
+        window.navigateTo = function(path) {
+          if (typeof window.gtag === 'function') {
+            window.gtag('event', 'page_view', { page_path: path });
+          }
+          if (window.dataLayer) {
+            window.dataLayer.push({ event: 'pageview', page: path });
+          }
+          return wasm.navigate_to(path);
+        };
+
+        if (window.initAnalyticsTracking) {
+          window.initAnalyticsTracking(wasm);
+        }
 
         console.log('Rust WebAssembly Kids Learning App loaded successfully!');
       } catch (e) {
