@@ -9,11 +9,11 @@ pub fn render_home_html() -> String {
         <span class="brand-name">Ravi Sankar Karuturi</span>
       </a>
       <nav class="nav-links">
-        <a href="#initiatives" class="nav-item">Initiatives</a>
-        <a href="#projects" class="nav-item">Projects</a>
-        <a href="#certifications" class="nav-item">Certifications</a>
-        <a href="#articles" class="nav-item">Articles</a>
-        <a href="#contact" class="nav-item">Contact</a>
+        <a href="#initiatives" class="nav-item" onclick="window.scrollToSection('initiatives', event);">Initiatives</a>
+        <a href="#projects" class="nav-item" onclick="window.scrollToSection('projects', event);">Projects</a>
+        <a href="#certifications" class="nav-item" onclick="window.scrollToSection('certifications', event);">Certifications</a>
+        <a href="#articles" class="nav-item" onclick="window.scrollToSection('articles', event);">Articles</a>
+        <a href="#contact" class="nav-item" onclick="window.scrollToSection('contact', event);">Contact</a>
         <a href="/kids-school-learning" class="nav-btn-highlight" onclick="event.preventDefault(); window.navigateTo('/kids-school-learning');">
           <span>🎮 Kids Learning</span>
         </a>
@@ -35,14 +35,14 @@ pub fn render_home_html() -> String {
         Hi, I'm <strong>Ravi Sankar Karuturi</strong>. 15+ years of engineering leadership across Ecommerce AI Search, Agentic Workflows, AdTech &amp; Site Monetization, Cloud Security, and Distributed Systems. Driving core platform innovations at Macy's, Gymboree, and Sony International.
       </p>
       <div class="hero-cta">
-        <a href="#initiatives" class="btn-primary">
+        <a href="#initiatives" class="btn-primary" onclick="window.scrollToSection('initiatives', event);">
           <span>💼 Enterprise Initiatives</span>
           <span class="btn-arrow">&rarr;</span>
         </a>
         <a href="/kids-school-learning" class="btn-secondary" onclick="event.preventDefault(); window.navigateTo('/kids-school-learning');">
           <span>🎮 Kids Learning App</span>
         </a>
-        <a href="#contact" class="btn-secondary">
+        <a href="#contact" class="btn-secondary" onclick="window.scrollToSection('contact', event);">
           <span>📫 Get in Touch</span>
         </a>
       </div>
@@ -498,12 +498,12 @@ pub fn render_home_html() -> String {
         <p class="footer-role">Staff Software Engineer &bull; Search Core &bull; karuturirs.com</p>
       </div>
       <div class="footer-links">
-        <a href="#initiatives">Initiatives</a>
-        <a href="#projects">Projects</a>
-        <a href="#certifications">Certifications</a>
-        <a href="#articles">Articles</a>
+        <a href="#initiatives" onclick="window.scrollToSection('initiatives', event);">Initiatives</a>
+        <a href="#projects" onclick="window.scrollToSection('projects', event);">Projects</a>
+        <a href="#certifications" onclick="window.scrollToSection('certifications', event);">Certifications</a>
+        <a href="#articles" onclick="window.scrollToSection('articles', event);">Articles</a>
         <a href="/kids-school-learning" onclick="event.preventDefault(); window.navigateTo('/kids-school-learning');">Kids Learning Games</a>
-        <a href="mailto:hello@karuturirs.com">Contact</a>
+        <a href="#contact" onclick="window.scrollToSection('contact', event);">Contact</a>
       </div>
       <p class="footer-copy">&copy; karuturirs.com &bull; All rights reserved</p>
     </div>
