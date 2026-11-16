@@ -316,21 +316,22 @@ pub fn render_home_html() -> String {
         <div>
           <div class="project-top-row">
             <div class="project-icon-box">⏰</div>
-            <span class="badge-oss">Open Source</span>
+            <span class="badge-live">Live Tool</span>
           </div>
           <h3 class="project-title">TimePropose.com</h3>
           <p class="project-desc">
-            Clean web tool engineered to share meeting availability across global timezones with zero scheduling friction. Designed using purely functional frontend architecture.
+            A frictionless meeting coordination tool that eliminates time zone confusion. Pick your available meeting slots in your local time and share a link; recipients instantly see all proposed times automatically converted to their own local time zone with no sign-ups or calendar sync required.
           </p>
           <div class="project-tags">
             <span class="project-tag">Elm</span>
-            <span class="project-tag">Functional UI</span>
-            <span class="project-tag">Timezone Math</span>
+            <span class="project-tag">Timezone Conversion</span>
+            <span class="project-tag">Meeting Scheduler</span>
+            <span class="project-tag">Zero Sign-up</span>
           </div>
         </div>
         <div class="project-footer">
-          <a href="https://github.com/Karuturirs/timepropose.git" target="_blank" rel="noreferrer" class="project-link">
-            <span>GitHub Repository</span>
+          <a href="https://timepropose.com" target="_blank" rel="noreferrer" class="project-link">
+            <span>Visit timepropose.com</span>
             <span class="link-arrow">&rarr;</span>
           </a>
         </div>
