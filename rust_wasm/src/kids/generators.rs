@@ -5,16 +5,38 @@ use super::models::{Difficulty, Question, Technique};
 use std::cmp::{max, min};
 use std::collections::HashSet;
 
+#[cfg(target_arch = "wasm32")]
+#[inline]
+pub fn rnd_float() -> f64 {
+    js_sys::Math::random()
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+pub fn rnd_float() -> f64 {
+    use std::cell::Cell;
+    thread_local! {
+        static SEED: Cell<u64> = const { Cell::new(0x853c49e6748fea9b) };
+    }
+    SEED.with(|seed| {
+        let mut x = seed.get();
+        x ^= x << 13;
+        x ^= x >> 7;
+        x ^= x << 17;
+        seed.set(x);
+        (x as f64) / (u64::MAX as f64)
+    })
+}
+
 pub fn rnd(low: i32, high: i32) -> i32 {
     if low >= high {
         return low;
     }
-    let r = js_sys::Math::random();
+    let r = rnd_float();
     low + (r * (high - low + 1) as f64).floor() as i32
 }
 
 pub fn pick<'a, T>(slice: &'a [T]) -> &'a T {
-    let idx = (js_sys::Math::random() * slice.len() as f64).floor() as usize;
+    let idx = (rnd_float() * slice.len() as f64).floor() as usize;
     &slice[idx.min(slice.len() - 1)]
 }
 
@@ -22,10 +44,41 @@ pub fn shuffle<T: Clone>(slice: &[T]) -> Vec<T> {
     let mut vec = slice.to_vec();
     let n = vec.len();
     for i in (1..n).rev() {
-        let j = (js_sys::Math::random() * (i + 1) as f64).floor() as usize;
+        let j = (rnd_float() * (i + 1) as f64).floor() as usize;
         vec.swap(i, j);
     }
     vec
+}
+
+pub fn scramble_word(word: &str) -> Vec<String> {
+    let chars: Vec<String> = word.chars().map(|c| c.to_string()).collect();
+    if chars.len() <= 1 {
+        return chars;
+    }
+
+    let has_distinct = chars.iter().any(|c| c != &chars[0]);
+    if !has_distinct {
+        return chars;
+    }
+
+    let mut scrambled = shuffle(&chars);
+    let mut attempts = 0;
+    while scrambled == chars && attempts < 20 {
+        scrambled = shuffle(&chars);
+        attempts += 1;
+    }
+
+    // Deterministic fallback if random shuffle still matched original word
+    if scrambled == chars {
+        for i in 1..scrambled.len() {
+            if scrambled[i] != scrambled[0] {
+                scrambled.swap(0, i);
+                break;
+            }
+        }
+    }
+
+    scrambled
 }
 
 pub fn num_choices(ans: i32, spread: i32) -> Vec<String> {
@@ -635,13 +688,14 @@ pub fn gen_spell(diff: Difficulty, _boost: u32) -> Question {
     let item = *pick(&pool);
     let word = item.0.to_string();
     let first_ch = word.chars().next().unwrap_or('A');
+    let choices = scramble_word(&word);
 
     Question {
         visual: item.1.to_string(),
         visual_small: false,
         prompt: "Spell this word!".to_string(),
         sub: format!("It starts with “{first_ch}”. Tap the letters in order."),
-        choices: Vec::new(),
+        choices,
         answer: word.clone(),
         reveal: Some(word.clone()),
         speak: format!("Can you spell the word in the picture? It starts with {first_ch}."),
@@ -1108,6 +1162,112 @@ pub fn generate_question(game_id: &str, diff: Difficulty, boost: u32) -> Questio
             };
             let picked_id = *pick(&all_ids);
             generate_question(picked_id, diff, boost)
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_scramble_word_scrambles_letters() {
+        for _ in 0..20 {
+            let scrambled = scramble_word("CAT");
+            assert_eq!(scrambled.len(), 3);
+            assert_ne!(scrambled.join(""), "CAT");
+            let mut sorted = scrambled.clone();
+            sorted.sort();
+            assert_eq!(sorted, vec!["A", "C", "T"]);
+        }
+    }
+
+    #[test]
+    fn test_scramble_word_with_duplicate_letters() {
+        for _ in 0..20 {
+            let scrambled = scramble_word("EGG");
+            assert_eq!(scrambled.len(), 3);
+            assert_ne!(scrambled.join(""), "EGG");
+            let mut sorted = scrambled.clone();
+            sorted.sort();
+            assert_eq!(sorted, vec!["E", "G", "G"]);
+        }
+
+        for _ in 0..20 {
+            let scrambled = scramble_word("BALL");
+            assert_eq!(scrambled.len(), 4);
+            assert_ne!(scrambled.join(""), "BALL");
+            let mut sorted = scrambled.clone();
+            sorted.sort();
+            assert_eq!(sorted, vec!["A", "B", "L", "L"]);
+        }
+    }
+
+    #[test]
+    fn test_scramble_word_edge_cases() {
+        assert_eq!(scramble_word("A"), vec!["A"]);
+        assert_eq!(scramble_word(""), Vec::<String>::new());
+        assert_eq!(scramble_word("ZZZ"), vec!["Z", "Z", "Z"]);
+    }
+
+    #[test]
+    fn test_all_words_in_pool_scramble_different_from_original() {
+        for def in WORDS {
+            let word = def.word;
+            let scrambled = scramble_word(word);
+            assert_eq!(
+                scrambled.len(),
+                word.len(),
+                "Scrambled tile count should match word length for {}",
+                word
+            );
+            assert_ne!(
+                scrambled.join(""),
+                word,
+                "Scrambled tiles must not match original word order for {}",
+                word
+            );
+            let mut sorted_scrambled = scrambled.clone();
+            sorted_scrambled.sort();
+            let mut sorted_orig: Vec<String> = word.chars().map(|c| c.to_string()).collect();
+            sorted_orig.sort();
+            assert_eq!(
+                sorted_scrambled, sorted_orig,
+                "All letters must be preserved for {}",
+                word
+            );
+        }
+    }
+
+    #[test]
+    fn test_gen_spell_has_scrambled_choices() {
+        let diffs = [
+            Difficulty::PreK,
+            Difficulty::Little,
+            Difficulty::Growing,
+            Difficulty::Super,
+        ];
+        for diff in diffs {
+            for _ in 0..10 {
+                let q = gen_spell(diff, 0);
+                assert!(q.is_spell);
+                let target = q.word.as_ref().expect("word should be set for spell");
+                assert_eq!(q.answer, *target);
+                assert_eq!(q.choices.len(), target.len());
+                assert_ne!(
+                    q.choices.join(""),
+                    *target,
+                    "Tiles should not be in identical order as target word: {}",
+                    target
+                );
+
+                let mut sorted_choices = q.choices.clone();
+                sorted_choices.sort();
+                let mut sorted_target: Vec<String> =
+                    target.chars().map(|c| c.to_string()).collect();
+                sorted_target.sort();
+                assert_eq!(sorted_choices, sorted_target);
+            }
         }
     }
 }

@@ -617,13 +617,17 @@ pub fn render_game_session(
             }
         }
 
-        let word_chars = match &q.word {
-            Some(w) => w.clone(),
-            None => q.answer.clone(),
+        let tiles: Vec<String> = if !q.choices.is_empty() {
+            q.choices.clone()
+        } else {
+            let word_chars = match &q.word {
+                Some(w) => w.clone(),
+                None => q.answer.clone(),
+            };
+            word_chars.chars().map(|c| c.to_string()).collect()
         };
         let mut tiles_html = String::new();
-        let letters: Vec<char> = word_chars.chars().collect();
-        for (idx, &ch) in letters.iter().enumerate() {
+        for (idx, ch) in tiles.iter().enumerate() {
             let used = session.spell_tiles_used.contains(&idx.to_string());
             let used_cls = if used { " used" } else { "" };
             tiles_html.push_str(&format!(
